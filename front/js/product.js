@@ -66,80 +66,121 @@ function produit(){
 }
 produit();
 
-//window.localStorage.clear();
-//console.log(localStorage);
-//console.log(e);
-
-function leme(){
-    console.log("valeur de : "); 
-    var values = [];
-    for (let i = 0; i < localStorage.length; i++){
-    value = JSON.parse(localStorage.getItem(localStorage.key(i)));
-    console.log("sucasdas");
-    return value;
-    }
-    console.log("valeur de 22 : "); 
-}
-leme();
-
-
-asd();//tmp
 function asd(){
-
-    const idProduitPanier = idProduit;
 
     const couleur = document.getElementById("colors");
 
     let quantiteString = document.getElementById("quantity");
-    const quantite = Math.floor(quantiteString.value);//transforme la variable "quatiteString" en nbr(int)  
+    const quantite = Math.floor(quantiteString.value);//transforme la variable "quatiteString" en nbr(int) //parseInt equivalent 
 
-    if (couleur.selectedIndex > 0 && quantite > 0)//tmp ">="
-	{
-	cosa(idProduitPanier,couleur.selectedIndex,quantite);
-//	window.location.href = "./cart.html";	
+    if (couleur.selectedIndex > 0 && quantite > 0 && quantite <= 100)
+    {
+	let booleen = false;
+	for (let e = 0 ; e < localStorage.length ; e++){
+	    if ( localStorage.key(e) == idProduit){
+		booleen = true;
+	    break;
+	    }
+	}
+	if (booleen == true){
+
+	    console.log("id produit existe dans le localStorage");
+	    tableau = JSON.parse(localStorage.getItem(idProduit));
+	    let i = tableau.length;
+	    let aaa = 1; //pour s'assurer que la boucle verifie tout les elements du tableau avant de passer a la condition suivant
+
+	    //on verifie la presence de la couleur
+	    for (q = 0; q < tableau.length ; q++){
+		if ( tableau[q].couleur == couleur.value){
+
+		    tableau[q].quantite = tableau[q].quantite + quantite;
+		    if (tableau[q].quantite <= 100){
+			tableau[q] = {"quantite" : tableau[q].quantite, "couleur" : couleur.value};
+			localStorage.setItem(idProduit, JSON.stringify(tableau));
+		    }
+		    else if (tableau[q].quantite > 100){
+			tableau[q].quantite = 100; 
+			tableau[q] = {"quantite" : tableau[q].quantite, "couleur" : couleur.value};
+			localStorage.setItem(idProduit, JSON.stringify(tableau));
+		    }
+
+		    aaa = 0;
+		}
+	    }
+	    if ( aaa == 1){
+
+		//creation d'un tableau:
+		tableau[i] = {"quantite" : quantite, "couleur" : couleur.value};
+	
+		//enregistrement du tableau sur le disk client
+		localStorage.setItem(idProduit, JSON.stringify(tableau));
+	    }
+	    
+    
+
+	}
+	else if(booleen == false){
+	    console.log("id non existant, enregistrement ds le localStorage");
+	    //creation d'un tableau:
+	    let tab = [{"quantite" : quantite, "couleur" : couleur.value}];
+	
+	    //enregistrement du tableau sur le disk client
+	    localStorage.setItem(idProduit, JSON.stringify(tab));
+	
+	}
+	else{
+	console.log("erreur no connue !");
+	}
+	
+	window.location.href = "./cart.html";	
+
+    }
+    else if (couleur.selectedIndex == 0 && quantite == 0 || quantite > 100){
+	console.log("veuillez choisir une couleur et une quantitee entre 1 et 100 svp");//a faire apparaite sur la page web !!!!
+    }
+    else if (couleur.selectedIndex == 0){
+	console.log("veuillez choisir une couleur svp");//a faire apparaite sur la page web !!!!
+    }
+    else if (quantite > 100 || quantite == 0){
+	console.log("veuillez choisir un nombre entre 1 et 100");//a faire apparaite sur la page web !!!!
     }
     else{
 	console.log("erreur de saisie depuis l'interface graphique du site !");
     }
-
-    function fctDeVerification(){
-    console.log("it 's me again fucktion cosa !!!!")
-    console.log("tab: "+tab[1]);
 }
 
-    function cosa(id,couleur,nb){ 
-	//creation d'un tableau:
-	let tab = [id,couleur,nb];
-	
-	//changer le format du tableau en string
-	let tab_serialized = JSON.stringify(tab);
-
-	//enregistrement du tableau sur le disk client
-	let z = Math.random();	
-	localStorage.setItem(`tabOnDisk${z}`, tab_serialized);
-	console.log(localStorage);
-	
-	//changer le format par defaut du localStorage en tableau 
-	let tab_deserialized = JSON.parse(localStorage.getItem(`tabOnDisk${z}`));
-	    
-	for(let i in localStorage ){
-	    console.log(localStorage[i]);
-	}
-    }
-}
-
+/*
 
 
 /*Utiles :
+//window.localStorage.clear();
 console.log("it's me fucktion cosa!");
 console.log(couleur.selectedIndex);
-console.log("c'est bon !");
 console.log("couleur index= " + couleur + " nombre = "+nb+" id : "+id );
 
 for(let i in localStorage ){
-    console.log([i]);//permet d'avoir tous le element de l'objet
-    console.log(localStorage[i]);permet d'avoir le contenue et le nom des objects 
+    console.log([i]);//permet d'avoir tous les elements de l'objet
+    console.log(localStorage[i]);//permet d'avoir le contenue et le nom des objects 
 }
+
+/*
+for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    console.log(`${key}: ${localStorage.getItem(key)}`);
+}
+
+
+//comment avoir le nom de la couleur 
+var selectElem = document.getElementById('colors')
+// When a new <option> is selected
+selectElem.addEventListener('change', function() {
+    console.log(selectElem.value);
+       })
+//comment avoir le nom de la couleur 
+ 
+
+*/
+
 /*
 function leme(){
 	
@@ -153,15 +194,36 @@ function leme(){
 	console.log(JSON.parse(localStorage.getItem(e)));
 	//console.log(e);
     } 
-    
 	//LeMe
     
     for (let e = 0 ; e < localStorage.length; e++){
 	console.log(JSON.parse(localStorage.getItem(localStorage.key(e))));
     }  //LeMe
-
 }
 leme();
+
+//How can i display a js object !!
+    str = JSON.stringify(tabl);
+    str = JSON.stringify(tabl, null, 4); // (Optional) beautiful indented output.
+    console.log(str);
+//How can i display a js object !!
+
+
+//internet(premet de sortir tous les infos ds le LocalStorage !!!
+function dataStorage() {
+    var values = [],
+    keys = Object.keys(localStorage),
+    i = keys.length;
+	
+    while ( i-- ) {
+	values.push( localStorage.getItem(keys[i]) );
+    }
+    console.log(values);
+
+}
+dataStorage();
+//internet(premet de sortir tous les infos ds le LocalStorage !!!
+
 */
 
 
@@ -177,7 +239,7 @@ recuperer la quantite (ok) //NE PAS ENREGISTER LE PRIX (A FAIRE A LA FIN)!!
 faire la condition avant envoie (ok)
 //faire une condition pour la validation du panier (ok)
 //
-//if ( couleurChoix == true && numbreCannape > 0 && numbreCannape <100)//securite pr le dev back-end "never trust user input"
+//securite pr le dev back-end "never trust user input"
 //{...}
 
 //(mentor)
@@ -194,7 +256,6 @@ console.log(url2);
 let a =  new URLSearchParams(window.location.href);
 console.log(a);
 
-*/
 
 
 
@@ -205,28 +266,23 @@ console.log(a);
 //backUp:
 
 /*
+ *
+ *
+ *
+ *
 asd();//tmp
 function asd(){
-
-    const idProduitPanier = idProduit;
 
     const couleur = document.getElementById("colors");
 
     let quantiteString = document.getElementById("quantity");
-    const quantite = Math.floor(quantiteString.value);//transforme la variable "quatiteString" en nbr(int)  
+    const quantite = Math.floor(quantiteString.value);//transforme la variable "quatiteString" en nbr(int) //parseInt equivalent 
 
     if (couleur.selectedIndex > 0 && quantite > 0)//tmp ">="
 	{
-	cosa(idProduitPanier,couleur.selectedIndex,quantite);
-//	window.location.href = "./cart.html";	
-    }
-    else{
-	console.log("erreur de saisie depuis l'interface graphique du site !");
-    }
-
-    function cosa(id,couleur,nb){ 
+		
 	//creation d'un tableau:
-	let tab = [id,couleur,nb];
+	let tab = [idProduit,couleur.selectedIndex,quantite];
 	
 	//changer le format du tableau en string
 	let tab_serialized = JSON.stringify(tab);
@@ -234,39 +290,27 @@ function asd(){
 	//enregistrement du tableau sur le disk client
 	let z = Math.random();	
 	localStorage.setItem(`tabOnDisk${z}`, tab_serialized);
-	console.log(localStorage);
+
+	tabl=[];	
+	for (let i = 0; i < localStorage.length; i++){
+	    tabl[i]= JSON.parse(localStorage.getItem(localStorage.key(i)));
+	}
+	for (let e in tabl){
+	    console.log("valeur du tableau :"+tabl[e]);
+	}
+	    console.log("valeur du tabl ds tabl:"+tabl[0][1]);
 	
 	//changer le format par defaut du localStorage en tableau 
 	let tab_deserialized = JSON.parse(localStorage.getItem(`tabOnDisk${z}`));
 	    
-
-	for(let i in localStorage ){
-	    console.log(localStorage[i]);
-	}
-
+//	window.location.href = "./cart.html";	
     }
+    else{
+	console.log("erreur de saisie depuis l'interface graphique du site !");
+    }
+
 }
 */
-/*
-//internet(premet de sortir tous les infos ds le LocalStorage !!!
-function dataStorage() {
-    var values = [],
-    keys = Object.keys(localStorage),
-    i = keys.length;
-	
-while ( i-- ) {
-    values.push( localStorage.getItem(keys[i]) );
-}
-    console.log(values);
 
-}
-dataStorage();
 
-function leme(){
-    for (let e = 0 ; e < localStorage.length; e++){
-	console.log(JSON.parse(localStorage.getItem(localStorage.key(e))));
-    } 
-}
-leme();
 
-*/
