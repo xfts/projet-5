@@ -22,7 +22,7 @@ function produit(){
 
     fetch(`http://127.0.0.1:3000/api/products/${idProduit}`)
 	.then(data => data.json())
-	.then((r) => { //r = variable 
+	.then((r) => { //r = variable(objet) 
 
 	    //creation de la balise pour image et son insertion:
 	    let divClass =document.getElementsByClassName("item__img");
@@ -57,8 +57,6 @@ function produit(){
 	    } 
 
 	    let boutonAjouter = document.getElementById('addToCart');
-	   // boutonAjouter.addEventListener('click', () => dsa(r));
-
 	    boutonAjouter.addEventListener('click', () => asd());
 
 
@@ -149,25 +147,31 @@ function asd(){
     }
 }
 
-/*
 
 
 /*Utiles :
 //window.localStorage.clear();
-console.log("it's me fucktion cosa!");
-console.log(couleur.selectedIndex);
-console.log("couleur index= " + couleur + " nombre = "+nb+" id : "+id );
 
+//voir les donnee ds le localStorage
 for(let i in localStorage ){
     console.log([i]);//permet d'avoir tous les elements de l'objet
     console.log(localStorage[i]);//permet d'avoir le contenue et le nom des objects 
 }
-
+*/
 /*
 for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
     console.log(`${key}: ${localStorage.getItem(key)}`);
 }
+
+//plus rapide:
+for (let i =0 ; i < localStorage.length; i++){
+    console.log(localStorage.key(i);
+    //console.log(i); // pour avoir les numero du array de l'objet du localStorage 
+}
+
+
+//voir les donnee ds le localStorage
 
 
 //comment avoir le nom de la couleur 
@@ -219,7 +223,6 @@ function dataStorage() {
 	values.push( localStorage.getItem(keys[i]) );
     }
     console.log(values);
-
 }
 dataStorage();
 //internet(premet de sortir tous les infos ds le LocalStorage !!!
@@ -246,8 +249,6 @@ faire la condition avant envoie (ok)
 //!!!!verifiez la quantite total avant de passer a la caisse!!!!!!! 
 //idee en plus, creee une variable objet et mettre tous var en bas a l'interieur !!
 
-
-/*
 //fonctionne, mais pas ce qui est demande
 let url2 =  window.location.search;
 console.log(url2);
@@ -257,60 +258,13 @@ let a =  new URLSearchParams(window.location.href);
 console.log(a);
 
 
-
-
-
-
-
-
-//backUp:
-
-/*
- *
- *
- *
- *
-asd();//tmp
-function asd(){
-
-    const couleur = document.getElementById("colors");
-
-    let quantiteString = document.getElementById("quantity");
-    const quantite = Math.floor(quantiteString.value);//transforme la variable "quatiteString" en nbr(int) //parseInt equivalent 
-
-    if (couleur.selectedIndex > 0 && quantite > 0)//tmp ">="
-	{
-		
-	//creation d'un tableau:
-	let tab = [idProduit,couleur.selectedIndex,quantite];
-	
-	//changer le format du tableau en string
-	let tab_serialized = JSON.stringify(tab);
-
-	//enregistrement du tableau sur le disk client
-	let z = Math.random();	
-	localStorage.setItem(`tabOnDisk${z}`, tab_serialized);
-
-	tabl=[];	
-	for (let i = 0; i < localStorage.length; i++){
-	    tabl[i]= JSON.parse(localStorage.getItem(localStorage.key(i)));
-	}
-	for (let e in tabl){
-	    console.log("valeur du tableau :"+tabl[e]);
-	}
-	    console.log("valeur du tabl ds tabl:"+tabl[0][1]);
-	
-	//changer le format par defaut du localStorage en tableau 
-	let tab_deserialized = JSON.parse(localStorage.getItem(`tabOnDisk${z}`));
-	    
-//	window.location.href = "./cart.html";	
-    }
-    else{
-	console.log("erreur de saisie depuis l'interface graphique du site !");
-    }
-
-}
 */
+
+
+
+
+
+
 
 
 

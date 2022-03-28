@@ -1,3 +1,15 @@
+/*tmp*/
+
+.limitedWidthBlock{
+    background-color: #022a45;
+}
+main{
+    background-color: #022a45 !important;
+}
+
+/*tmp*/
+
+
 /*********/
 /*GENERAL*/
 /*********/
@@ -5,7 +17,7 @@
 body {
 	font-family: 'Montserrat', sans-serif;
 	margin: 0;
-	color: white;
+	color: white; 
 	min-width: 300px;
 }
 h1 {
@@ -121,7 +133,7 @@ h2 {
 /******/
 
 main {
-	background-color: var(--main-color);
+    background-color: var(--main-color); 
 }
 
 /*items*/
