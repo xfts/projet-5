@@ -8,10 +8,9 @@ afficheArticlePrix(a);
 
 
 
-//tab = JSON.parse(localStorage.getItem(localStorage.key(0)));
-//console.log(tab[0]);
-
-
+	    //recuperation de la valeur "value" de la balise <input>
+//	    value_input = article.querySelector("input");
+	    //console.log(value_input.getAttribute("value"));
 
 
 
@@ -222,7 +221,10 @@ function asd(idProduit,colores,quanLS){
 	    input.setAttribute("max", "100");
 	    input.setAttribute("value", `${quanLS}`);
 
-	    
+	    input.addEventListener('change', function(e){
+		var inputChange = e.target;
+		console.log(inputChange.getAttribute("value"));    
+	    }); 
 	    let divItemConSetD = document.createElement("div");
 	    divItemConSetD.setAttribute("class","cart__item__content__settings__delete");
 		
@@ -241,29 +243,32 @@ function asd(idProduit,colores,quanLS){
 	    //Attribution de la balise <article> a une variable "article"
 	    article = buttonClicked.parentElement.parentElement.parentElement.parentElement;
 	    data_id = article.getAttribute("data-id");
+	    couleur = article.getAttribute("data-color");
 
 
 	    //pour effacer un element depuis le localStorage a partir de sa cle 
-	    for (let i = 0; i < localStorage.length; i++) {
+	    tab = JSON.parse(localStorage.getItem(data_id));
+	    //parcour les clefs et l'efface 
+	    for (let i = 0; i < localStorage.length; i++){
 		const key = localStorage.key(i);
-		console.log(`${key}`);
-		if( data_id === key){
+		if( data_id === key && tab.length == 1){//ajouter la condition que le contenu de la clef est egale a 1 
 		    localStorage.removeItem(localStorage.key(i));
 		}
+		//parcour le tableau (valeur de la clef) a la recherche de la couleur ds le cas ou la clef aurait plusieur valeurs 
+		else if(data_id === key && tab.length > 1 ){
+		    for (let w = 0; w < tab.length ; w++){
+			if ( tab[w].couleur === couleur){
+			    tab.splice(w, 1);//w cible le numero de la ligne ds le tableau, 1 pr effacer {!! bizarre !!}
+			    localStorage.setItem(localStorage.key(i), JSON.stringify(tab));
+			}
+		    }
+		}
 	    }
+	});
 
 
-	    //recuperation de la valeur "value" de la balise <input>
-	    value_input = article.querySelector("input");
-	    //console.log(value_input.getAttribute("value"));
-
-	    });
-
-//A revoir
-////////////////////////////////////////////////////		//
     prixTotal += r.price * quanLS;//fonctionne a merveille
     document.getElementById("totalPrice").innerHTML=`${prixTotal}`;
-////////////////////////////////////////////////////		//
 
 
 	    //mise en boite :
@@ -301,7 +306,6 @@ function asd(idProduit,colores,quanLS){
 
 
 
-//    console.log(document.querySelector(".deleteItem"));
 
 
 
