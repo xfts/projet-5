@@ -1,92 +1,165 @@
-
-
-let idProduit = localStorage.key(0);
-tab = JSON.parse(localStorage.getItem(`${idProduit}`));
-//console.log(tab[0].couleur);
-
-
-let tableauTT = [];
-let prixArticle  ;
+//(variable global)
+let prixArticle ;//pb
 let prixTotal = 0;//pb
-let a = 0; //nbr de d'article
+let a = 0; //nbr de d'article 
 
-for (let e = 0 ; e < localStorage.length ; e++){
-    //on recupe la clef (identifiant du produit) depuis le localStorage
-    let idProduit = localStorage.key(e);
-    
-    //on recupre les elements de la clef sous format JSON (string par defaut)
-    tab = JSON.parse(localStorage.getItem(`${idProduit}`));
-
-    //Attribution des elements a des variables 
-    let quanLS = tab[0].quantite; //quantSL : quantite localStorage
-    let colores = tab[0].couleur;
-    asd(idProduit,colores,quanLS);    
-    calc(quanLS,idProduit);
-    a++;
-
-    //Enclanche l'affichage des elements du meme id mais avec des characteristiques autres ("couleur","quantite" ds le cas present) 
-    if ( tab.length > 1){
-	for (let i = 1 ; i < tab.length ; i++){
-	    let quanLS = tab[i].quantite;
-	    let colores = tab[i].couleur;
-	    asd(idProduit,colores,quanLS);    
-	    calc(quanLS,idProduit);
-	    a++;
-	}   
-    }
-}
+show();
 afficheArticlePrix(a);
 
-function effacerArticle(){
-    console.log("asdasdasdasd");
-    var removeCartItemButtons = document.getElementsByClassName("deleteItem");
-console.log(removeCartItemButtons);
-    for (var i = 0; i < removeCartItemButtons.length; i++){
-	console.log("asdas");
-	var button = removeCartItemButtons[i];
-	button.addEventListener('click', function(){
-	console.log('click')
-	})
-    /*
-    button.addEventListener('click', function(event){
-    var buttonClicked = event.target
-    buttonClicked.parentElement.parentElement.remove()
-    })*/
+
+
+//tab = JSON.parse(localStorage.getItem(localStorage.key(0)));
+//console.log(tab[0]);
+
+
+
+
+
+			//formulaire//
+/////////////////////////////////////////////////////////////////
+let form = document.querySelector('.cart__order__form');
+
+//Ecouter la modification de l'email
+form.email.addEventListener('change', function(){
+    validEmail(this);
+});
+
+//Ecouter la modification de l'adresse 
+form.address.addEventListener('change', function(){
+    validAdress(this);
+});
+
+//Ecouter la modification d'autre 
+form.firstName.addEventListener('change', function(){
+    validAutre(this);
+});
+form.lastName.addEventListener('change', function(){
+    validAutre(this);
+});
+form.city.addEventListener('change', function(){
+    validAutre(this);
+});
+
+//*********** Validation autre ***********//
+const validAutre = function(entrezAutre){
+//creation de la reg exp pour validation d'autre
+    let autreRegExp = new RegExp(
+    '^[A-Za-z,-]{3,25}[-]{0,1}[A-Za-z]{0,25}[\ \]{0,4}$'
+    );
+    //On test l'expression reguliere
+    let testAutre = autreRegExp.test(entrezAutre.value);
+
+    //message qui permet de voir si l'autre a le bon format 
+    let a = entrezAutre.nextElementSibling;
+    if(testAutre){
+	a.innerHTML = 'mot Valide';
+	a.classList.remove('text-danger');//enleve la class css
+	a.classList.add('text-success');
+	return true;
+	}
+    else{
+	a.innerHTML = 'mot non valide';
+	a.classList.remove('text-success');//enleve la class css
+	a.classList.add('text-danger');
+    return false;
+    }
+};
+
+//*********** Validation adress ***********//
+const validAdress = function(entrezAdress){
+//creation de la reg exp pour validation d'adress
+    let adressRegExp = new RegExp(
+    '^[0-9]{2,3}[\ \]{1,4}[A-Za-z]{3,25}[\ \]{0,4}[A-Za-z,-]{0,25}[\ \]{0,4}[A-Za-z,-]{0,25}[\ \]{0,4}$'
+    //ds le cas ou le nom est long (ex 12 avenue des etats-unis {toulouse})
+    );
+    //On test l'expression reguliere
+    let testAdress = adressRegExp.test(entrezAdress.value);
+
+    //message qui permet de voir si l'adress a le bon format 
+    let a = entrezAdress.nextElementSibling;
+    if(testAdress){
+	a.innerHTML = 'adresse Valide';
+	a.classList.remove('text-danger');//enleve la class css
+	a.classList.add('text-success');
+	return true;
+	}
+    else{
+	a.innerHTML = 'non valide';
+	a.classList.remove('text-success');//enleve la class css
+	a.classList.add('text-danger');
+    return false;
+    }
+};
+
+//*********** Validation Email ***********//
+const validEmail = function(entrezEmail){
+//creation de la reg exp pour validation d'email
+    let emailRegExp = new RegExp(
+    '^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$','g'
+    );
+    //On test l'expression reguliere
+    let testEmail = emailRegExp.test(entrezEmail.value);
+
+    //message qui permet de voir si l'adress email a le bon format 
+    let a = entrezEmail.nextElementSibling;
+    if(testEmail){
+	a.innerHTML = 'courriel Valide';
+	a.classList.remove('text-danger');//enleve la class css
+	a.classList.add('text-success');
+	return true;
+	}
+    else{
+	a.innerHTML = 'adress no valide';
+	a.classList.remove('text-success');//enleve la class css
+	a.classList.add('text-danger');
+    return false;
+    }
+};
+
+//Ecouter la soumission du formulaire
+form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (validEmail(form.email) && validPasswd(form.password)){
+	console.log('sa marche');
+	form.submit();
+    }
+    else{
+	console.log('erreur');
+    }
+});
+/////////////////////////////////////////////////////////////////
+
+
+
+function show(){
+
+    for (let e = 0 ; e < localStorage.length ; e++){
+    //on recupe la clef (identifiant du produit) depuis le localStorage
+	let idProduit = localStorage.key(e);
+    
+    //on recupre les elements de la clef sous format JSON (string par defaut)
+	tab = JSON.parse(localStorage.getItem(`${idProduit}`));
+
+	//Attribution des elements a des variables 
+	let quanLS = tab[0].quantite; //quantSL : quantite localStorage
+	let colores = tab[0].couleur;
+	asd(idProduit,colores,quanLS);    
+	//calc(quanLS,idProduit);
+	a++;
+
+	//Enclanche l'affichage des elements du meme id mais avec des characteristiques autres ("couleur","quantite" ds le cas present) 
+	if ( tab.length > 1){
+	    for (let i = 1 ; i < tab.length ; i++){
+		let quanLS = tab[i].quantite;
+		let colores = tab[i].couleur;
+		asd(idProduit,colores,quanLS);    
+		//calc(quanLS,idProduit);
+		a++;
+	    }   
+	}
     }
 }
 
-
-
-
-
-
-function afficheArticlePrix(a){
-	    //a regler plus tart (prixTotal) 
-    let totalQuantiteArticle = document.getElementById("totalQuantity");
-    totalQuantiteArticleTxt = document.createTextNode(`${a}`);
-
-    let totalPrixArticle = document.getElementById("totalPrice");
-    totalPrixArticleTxt = document.createTextNode(`${prixTotal}`);
-
-    totalPrixArticle.appendChild(totalPrixArticleTxt);
-
-    totalQuantiteArticle.appendChild(totalQuantiteArticleTxt);
-    totalPrixArticle.appendChild(totalPrixArticleTxt);
-}
-
-
-// a regler !!
-function calc(quanLS,idProduit){
-    fetch(`http://127.0.0.1:3000/api/products/${idProduit}`)
-	.then(data => data.json())
-	.then((t) => {  
-	    prixArticle = t.price;
-	    prixTotal += quanLS * prixArticle;
-	    //fonctionne 	    
-	    return prixTotal;
-    });
-
-}
 
 function asd(idProduit,colores,quanLS){
 
@@ -99,10 +172,10 @@ function asd(idProduit,colores,quanLS){
 	    let section = document.getElementById("cart__items");
 
 	    //creation de la balises article :
-	    let article = document.createElement("article");
+	    var article = document.createElement("article");
 	    article.setAttribute("class", "cart__item"); 
-	    article.setAttribute("data_id", `${idProduit}`); 
-	    article.setAttribute("data_color", `${colores}`);
+	    article.setAttribute("data-id", `${idProduit}`); 
+	    article.setAttribute("data-color", `${colores}`);
 
 
 	    //creation de la balise div image :
@@ -116,7 +189,6 @@ function asd(idProduit,colores,quanLS){
 	    img.setAttribute("alt", r.altTxt);
 
 	    //creation des balises div (1) ... :
-	    
 	    let divItemC = document.createElement("div"); 
 	    divItemC.setAttribute("class", "cart__item__content");
 	    
@@ -133,7 +205,6 @@ function asd(idProduit,colores,quanLS){
 	    let pPrixText = document.createTextNode(r.price +" €");
 
 	    //creation des balises div (2) ... :
-
 	    let divItemConS = document.createElement("div");
 	    divItemConS.setAttribute("class", "cart__item__content__settings");
 
@@ -159,6 +230,40 @@ function asd(idProduit,colores,quanLS){
 	    pDelete.setAttribute("class","deleteItem");
 	    let pDeleteText = document.createTextNode("Supprimer");
 
+
+			//delete item Test leme//
+	    ////////////////////////////////////////////
+	    pDelete.addEventListener('click', function(e){
+	    var buttonClicked = e.target
+	    buttonClicked.parentElement.parentElement.parentElement.parentElement.remove()
+	    
+
+	    //Attribution de la balise <article> a une variable "article"
+	    article = buttonClicked.parentElement.parentElement.parentElement.parentElement;
+	    data_id = article.getAttribute("data-id");
+
+
+	    //pour effacer un element depuis le localStorage a partir de sa cle 
+	    for (let i = 0; i < localStorage.length; i++) {
+		const key = localStorage.key(i);
+		console.log(`${key}`);
+		if( data_id === key){
+		    localStorage.removeItem(localStorage.key(i));
+		}
+	    }
+
+
+	    //recuperation de la valeur "value" de la balise <input>
+	    value_input = article.querySelector("input");
+	    //console.log(value_input.getAttribute("value"));
+
+	    });
+
+//A revoir
+////////////////////////////////////////////////////		//
+    prixTotal += r.price * quanLS;//fonctionne a merveille
+    document.getElementById("totalPrice").innerHTML=`${prixTotal}`;
+////////////////////////////////////////////////////		//
 
 
 	    //mise en boite :
@@ -193,16 +298,15 @@ function asd(idProduit,colores,quanLS){
 	    pDelete.appendChild(pDeleteText);
 
 	    //Creation des balises qui seront afficher ds la page html
-	
+
+
+
+//    console.log(document.querySelector(".deleteItem"));
 
 
 
 	});
-
 }
-
-
-
 
 
 
@@ -218,6 +322,9 @@ function asd(idProduit,colores,quanLS){
 //On ne fait qui lire les prix depuis la page html (document {objet js})pr faire le calcule du prix Total, mais les donnees envoye a l'api pr la commande general, va avoir le prix par article (depuis une api aussi).
 //Seul le nb d'article et le prix total seront envoyer pour subir une verification* et un traitement  *(ds le cas ou l'utitilisateur ou autre a modife le prix total en question ) 
 //
+//Formulaire :
+//on conseillerait les clients de passer par des api pour les adresses pour faciliter l'aquesition des donnees et d'avoir des resultats les plus juste possible 
+//
 //
 //timeStamp(utiliser cette fct), avec fonction de hashage qui prend en valeur en micro seconde
 //micro
@@ -227,27 +334,151 @@ function asd(idProduit,colores,quanLS){
 /* ne fonctionne pas ds la boucle ??? bizarre
     let pQuantiteTxt = document.createTextNode(`Qte : ${tab[0].quantite} `);
 */
-/*
-function calc(quanLS,idProduit){
-    fetch(`http://127.0.0.1:3000/api/products/${idProduit}`)
-	.then(data => data.json())
-	.then((t) => {  
-    let prixArticle = t.price;
-    console.log(t.price);
-    console.log(quanLS);
-    let prixTotal = quanLS * prixArticle;
-    return 1;
-    });
-}
-*/
+
+
 //tmp/
 //////////////////////////////////////////////////////////////////
 //fct pour voir les donnees de produit de l'api a travers la console
 function apiTab(){
-
 fetch("http://127.0.0.1:3000/api/products/")
     .then(data => data.json())
     .then((dataFinal) => console.table(dataFinal));
 }
 //////////////////////////////////////////////////////////////////
+
+
+
+
+
+			//code a regler//
+//////////////////////////////////////////////////////////////////
+/*
+
+//Fonctionne
+//avoir le prix sur une variable depuis l'api (reussi!!!)
+let idProduit = localStorage.key(0); let obj;
+fetch(`http://127.0.0.1:3000/api/products/${idProduit}`)
+  .then(res => res.json())
+    .then(data => obj = data)
+
+//Ne fonctionne pas, et c'est cette fonction qui doit marcher
+function calc(quanLS,idProduit){
+let obj = 0;
+fetch(`http://127.0.0.1:3000/api/products/${idProduit}`)
+    .then(res => res.json())
+	.then(data => obj = data)
+	    console.log(obj);//sa ne marche pas !!!
+    //		prixTotal += quanLS * obj.price;
+	  //	    return prixTotal;
+Soluce :il faut mettre les parentheses sur .then(data => {...}
+}
+fonctionne !!
+function calc(quanLS,idProduit){
+let obj = 0;
+    fetch(`http://127.0.0.1:3000/api/products/${idProduit}`)
+    .then(res => res.json())
+	.then(data => {
+	    obj = data;
+		console.log(obj.price);
+    })		                                      
+}
+*/
+/////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////
+/*
+let articleCart = document.querySelectorAll(".cart__item");//FUCK YOU JSfrom the buttom of my BALLS !!!!! (fonctionne sur les elements deja present la page html et non pas apres (no se pq)
+console.log(articleCart);
+
+
+const vbn = document.body;
+console.log(vbn);
+    const removeCartItemButtons = document.getElementsByClassName("deleteItem");
+    console.log(removeCartItemButtons);//sa marche ici BORDELLLLL
+    console.log(removeCartItemButtons.length);// PK ??????????????????????????????????????????????????? PUT11111111111111!!!!!!
+/////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////
+function calc(quanLS,idProduit){
+    fetch(`http://127.0.0.1:3000/api/products/${idProduit}`)
+	.then(data => data.json())
+	.then((t) => {  
+	    prixTotal += quanLS * t.price;
+	    //fonctionne 	    
+	    //return prixTotal; //ne fonctionne pas
+    });
+}
+/////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////
+function effacerArticle(){
+    const removeCartItemButtons = document.getElementsByClassName("deleteItem");
+    console.log(removeCartItemButtons);//sa marche ici BORDELLLLL
+    console.log(removeCartItemButtons.length);// PK ??????????????????????????????????????????????????? PUT11111111111111!!!!!!
+    button.addEventListener('click', function(){
+    console.log('click')
+    })
+//    for (var i = 0; i < removeCartItemButtons.length; i++){
+	//var button = removeCartItemButtons[i];
+
+    /*
+    button.addEventListener('click', function(event){
+    var buttonClicked = event.target
+    buttonClicked.parentElement.parentElement.remove()
+    })
+}
+*/
+/////////////////////////////////////////////////////////
+		//delete item Test//
+/////////////////////////////////////////////////////////
+	/*
+	    pDelete.addEventListener('click', function(){
+	    article.innerHTML = "";
+	    //let a = this.closest('article');
+	    //a.innerHTML = "";   
+	    });*/
+/////////////////////////////////////////////////////////
+
+// a perfectionner (regler l'affichage du prix total)
+function afficheArticlePrix(a){
+	    //a regler plus tart (prixTotal) 
+    let totalQuantiteArticle = document.getElementById("totalQuantity");
+    totalQuantiteArticleTxt = document.createTextNode(`${a}`);
+    totalQuantiteArticle.appendChild(totalQuantiteArticleTxt);
+/*
+    let totalPrixArticle = document.getElementById("totalPrice");
+    prixTotal += r.price * quanLS;//fonctionne a merveille
+    console.log(prixTotal);		
+    totalPrixArticleTxt = document.createTextNode(`${prixTotal}`);
+    //innerHTML pr remplacer par la dernier valeur (ecraser) 
+    totalPrixArticle.appendChild(totalPrixArticleTxt);
+*/
+}
+//////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+/*
+// TRUCK EFFACER 
+//  a garder jusqu'a la fin du projet
+let idProduit = localStorage.key(0);
+tab = JSON.parse(localStorage.getItem(`${idProduit}`));
+console.log(tab[0].couleur);
+
+let tableauTT = [];
+
+//leme
+    document.querySelector(".deleteItem").addEventListener('click', function(e){
+	var buttonClicked = e.target
+	buttonClicked.parentElement.parentElement.parentElement.parentElement.remove()
+    });
+//leme
+*/
+
 
