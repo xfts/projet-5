@@ -8,9 +8,9 @@ afficheArticlePrix(a);
 
 
 
-	    //recuperation de la valeur "value" de la balise <input>
-//	    value_input = article.querySelector("input");
-	    //console.log(value_input.getAttribute("value"));
+    //recuperation de la valeur "value" de la balise <input>
+    //value_input = article.querySelector("input");
+    //console.log(value_input.getAttribute("value"));
 
 
 
@@ -48,18 +48,20 @@ const validAutre = function(entrezAutre){
     //On test l'expression reguliere
     let testAutre = autreRegExp.test(entrezAutre.value);
 
+
     //message qui permet de voir si l'autre a le bon format 
     let a = entrezAutre.nextElementSibling;
     if(testAutre){
 	a.innerHTML = 'mot Valide';
+	a.style.color='green';//pb ici, le vert ne s'enleve pas
 	a.classList.remove('text-danger');//enleve la class css
 	a.classList.add('text-success');
 	return true;
 	}
     else{
 	a.innerHTML = 'mot non valide';
-	a.classList.remove('text-success');//enleve la class css
-	a.classList.add('text-danger');
+	a.classList.remove('text-danger');//enleve la class css
+	a.classList.add('text-success');
     return false;
     }
 };
@@ -78,14 +80,16 @@ const validAdress = function(entrezAdress){
     let a = entrezAdress.nextElementSibling;
     if(testAdress){
 	a.innerHTML = 'adresse Valide';
+	a.style.color='green';
 	a.classList.remove('text-danger');//enleve la class css
 	a.classList.add('text-success');
 	return true;
 	}
     else{
 	a.innerHTML = 'non valide';
-	a.classList.remove('text-success');//enleve la class css
-	a.classList.add('text-danger');
+	a.style.color='#fbbcbc';
+	a.classList.remove('text-danger');//enleve la class css
+	a.classList.add('text-success');
     return false;
     }
 };
@@ -103,27 +107,30 @@ const validEmail = function(entrezEmail){
     let a = entrezEmail.nextElementSibling;
     if(testEmail){
 	a.innerHTML = 'courriel Valide';
+	a.style.color='green';
 	a.classList.remove('text-danger');//enleve la class css
 	a.classList.add('text-success');
 	return true;
 	}
     else{
 	a.innerHTML = 'adress no valide';
-	a.classList.remove('text-success');//enleve la class css
-	a.classList.add('text-danger');
+	a.style.color='#fbbcbc';
+	a.classList.remove('text-danger');//enleve la class css
+	a.classList.add('text-success');
     return false;
     }
 };
 
+//bug qlq que part
 //Ecouter la soumission du formulaire
 form.addEventListener('submit', function(e){
     e.preventDefault();
-    if (validEmail(form.email) && validPasswd(form.password)){
+    if (validEmail(form.email) && validAutre(form.Autre) && validAdress(form.adress)){
 	console.log('sa marche');
 	form.submit();
     }
     else{
-	console.log('erreur');
+	console.log('erreur ds le formulaire');
     }
 });
 /////////////////////////////////////////////////////////////////
@@ -221,10 +228,16 @@ function asd(idProduit,colores,quanLS){
 	    input.setAttribute("max", "100");
 	    input.setAttribute("value", `${quanLS}`);
 
+
+		//modification de la quantie et du prixTotal
 	    input.addEventListener('change', function(e){
+	    //mettre une securite pour les valeurs entree!!!!
 		var inputChange = e.target;
-		console.log(inputChange.getAttribute("value"));    
+		console.log(inputChange.value);    
 	    }); 
+		//modification de la quantie et du prixTotal
+
+
 	    let divItemConSetD = document.createElement("div");
 	    divItemConSetD.setAttribute("class","cart__item__content__settings__delete");
 		
@@ -267,8 +280,10 @@ function asd(idProduit,colores,quanLS){
 	});
 
 
+//////////////////////A regler
     prixTotal += r.price * quanLS;//fonctionne a merveille
     document.getElementById("totalPrice").innerHTML=`${prixTotal}`;
+//////////////////////A regler
 
 
 	    //mise en boite :
@@ -305,15 +320,56 @@ function asd(idProduit,colores,quanLS){
 	    //Creation des balises qui seront afficher ds la page html
 
 
-
-
-
-
 	});
 }
 
 
+//a regler plus tard (bonne chance a moi meme, crois moi, tu en auras bien besoin )
+/*
+	    //Validation de la commande ://
+	/////////////////////////////////////////
+		
 
+	//creation de l'objet à envoyer au server
+        
+        const dataToSend = { contact,products };
+            
+        //creation de l'init pour le fetch
+        
+        const monInit = {
+            method: 'POST',
+            body: JSON.stringify(dataToSend),
+            headers: {
+            	'Content-Type': 'application/json'
+            }
+         };
+
+        //creation de la requete pour le fetch
+         
+        let maRequete = new Request(`http://localhost:3000/api/products/order/`, monInit);
+
+        //appel du fetch et envoie des data
+        
+        fetch(maRequete, monInit)
+        	.then(response => response.json())
+        	.then(data => {
+         
+         //vidange du local storage
+         
+         localStorage.clear(); 
+         
+         //recupération de l'id dans les données en réponse
+         
+         localStorage.setItem('orderId', data.orderId);
+         
+         //redirection
+         document.location.href = 'confirmation.html?id=' + data.orderId;
+      });
+
+	    /////////////////////////////////////////
+		//Validation de la commande ://
+
+*/
 
 
 
