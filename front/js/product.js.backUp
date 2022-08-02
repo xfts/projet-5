@@ -1,7 +1,3 @@
-//regler le typeof  "quantite" (la mettre en string ou en int) et travailler avec !!! (le plus gros est derrier refreeee 
-
-
-
 //recupe l'id du produit a travers l'url et la met sous une variable globale
 const url =  new URLSearchParams(window.location.search);
 let idProduit = url.get('id');
@@ -64,17 +60,9 @@ function afficheProduit(){
 function elementsToLocalStorage(){
 
     const couleur = document.getElementById("colors");
-    let quantiteString = document.getElementById("quantity");
-    let prixDuCannape = document.getElementById("price");
-    // r.price;
 
-	
-//transforme les variables "prixDuCannape" et  "quatiteString" en nbr(int) //parseInt equivalent 
-	//old
-    //prixDuCannape = prixDuCannape.innerText.replace(/\D/g, "");
-    //new
-    prixDuCannape = Math.floor(prixDuCannape.innerText);
-    const quantite = Math.floor(quantiteString.value);
+    let quantiteString = document.getElementById("quantity");
+    const quantite = Math.floor(quantiteString.value);//transforme la variable "quatiteString" en nbr(int) //parseInt equivalent 
 
     if (couleur.selectedIndex > 0 && quantite > 0 && quantite <= 100)
     {
@@ -98,12 +86,12 @@ function elementsToLocalStorage(){
 
 		    tableau[q].quantite = tableau[q].quantite + quantite;
 		    if (tableau[q].quantite <= 100){
-			tableau[q] = {"quantite" : tableau[q].quantite, "couleur" : couleur.value, "prix" : prixDuCannape};
+			tableau[q] = {"quantite" : tableau[q].quantite, "couleur" : couleur.value};
 			localStorage.setItem(idProduit, JSON.stringify(tableau));
 		    }
 		    else if (tableau[q].quantite > 100){
 			tableau[q].quantite = 100; 
-			tableau[q] = {"quantite" : tableau[q].quantite, "couleur" : couleur.value, "prix" : prixDuCannape};
+			tableau[q] = {"quantite" : tableau[q].quantite, "couleur" : couleur.value};
 			localStorage.setItem(idProduit, JSON.stringify(tableau));
 		    }
 
@@ -113,7 +101,7 @@ function elementsToLocalStorage(){
 	    if ( aaa === 1){
 
 		//creation d'un tableau:
-		tableau[i] = {"quantite" : quantite, "couleur" : couleur.value, "prix" : prixDuCannape};
+		tableau[i] = {"quantite" : quantite, "couleur" : couleur.value};
 	
 		//enregistrement du tableau sur le disk client
 		localStorage.setItem(idProduit, JSON.stringify(tableau));
@@ -123,7 +111,7 @@ function elementsToLocalStorage(){
 	else if(booleen == false){
 	    console.log("id non existant, enregistrement ds le localStorage");
 	    //creation d'un tableau:
-	    let tab = [{"quantite" : quantite, "couleur" : couleur.value, "prix" : prixDuCannape}];
+	    let tab = [{"quantite" : quantite, "couleur" : couleur.value}];
 	
 	    //enregistrement du tableau sur le disk client
 	    localStorage.setItem(idProduit, JSON.stringify(tab));

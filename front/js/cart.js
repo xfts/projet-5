@@ -1,16 +1,42 @@
 //(variable global)
-let prixArticle ;//pb
-let prixTotal = 0;//pb
 let a = 0; //nbr de d'article 
-
-show();
-afficheArticlePrix(a);
-
+let prixTotalStatique = 0;//operationel
+let valeurTotalInput =0;//operationel
 
 
-    //recuperation de la valeur "value" de la balise <input>
-    //value_input = article.querySelector("input");
-    //console.log(value_input.getAttribute("value"));
+let prixTotalDynamique = 0;
+let quantiteCannapeLocalStorage = 0; 
+/*
+for(let w = 0; w < localStorage.length ; w++){
+    tableau = JSON.parse(localStorage.getItem(localStorage.key(w)));
+    prixCannapeLocalStorage = tableau[0].prix;
+
+    //calculer le nb total de quantite :
+    if (tableau.length > 1){
+	for (s = 0 ; s < tableau.length ; s++){
+	    quantiteCannapeLocalStorage = 0; 
+	    quantiteCannapeLocalStorage += tableau[s].quantite;
+	    prixTotalDynamique += quantiteCannapeLocalStorage * prixCannapeLocalStorage;
+	}
+    }
+    else if (tableau.length == 1) {
+	quantiteCannapeLocalStorage = tableau[0].quantite;
+	prixTotalDynamique += quantiteCannapeLocalStorage * prixCannapeLocalStorage;
+    } 
+
+    quantiteCannapeLocalStorage = 0; 
+
+    console.log("Total est : "+prixTotalDynamique+" euro");
+
+}
+*/
+
+
+
+
+
+recupereDataLocalStorage();
+
 
 
 
@@ -99,7 +125,7 @@ const validEmail = function(entrezEmail){
 //creation de la reg exp pour validation d'email
     let emailRegExp = new RegExp(
     '^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$','g'
-    );
+    );//erreur avec @ !!!!
     //On test l'expression reguliere
     let testEmail = emailRegExp.test(entrezEmail.value);
 
@@ -134,10 +160,11 @@ form.addEventListener('submit', function(e){
     }
 });
 /////////////////////////////////////////////////////////////////
+			//formulaire//
 
 
 
-function show(){
+function recupereDataLocalStorage(){
 
     for (let e = 0 ; e < localStorage.length ; e++){
     //on recupe la clef (identifiant du produit) depuis le localStorage
@@ -149,8 +176,8 @@ function show(){
 	//Attribution des elements a des variables 
 	let quanLS = tab[0].quantite; //quantSL : quantite localStorage
 	let colores = tab[0].couleur;
-	asd(idProduit,colores,quanLS);    
-	//calc(quanLS,idProduit);
+
+	afficheProduit(idProduit,colores,quanLS);    
 	a++;
 
 	//Enclanche l'affichage des elements du meme id mais avec des characteristiques autres ("couleur","quantite" ds le cas present) 
@@ -158,8 +185,8 @@ function show(){
 	    for (let i = 1 ; i < tab.length ; i++){
 		let quanLS = tab[i].quantite;
 		let colores = tab[i].couleur;
-		asd(idProduit,colores,quanLS);    
-		//calc(quanLS,idProduit);
+
+		afficheProduit(idProduit,colores,quanLS);    
 		a++;
 	    }   
 	}
@@ -167,7 +194,7 @@ function show(){
 }
 
 
-function asd(idProduit,colores,quanLS){
+function afficheProduit(idProduit,colores,quanLS){
 
     fetch(`http://127.0.0.1:3000/api/products/${idProduit}`)
 	.then(data => data.json())
@@ -229,15 +256,6 @@ function asd(idProduit,colores,quanLS){
 	    input.setAttribute("value", `${quanLS}`);
 
 
-		//modification de la quantie et du prixTotal
-	    input.addEventListener('change', function(e){
-	    //mettre une securite pour les valeurs entree!!!!
-		var inputChange = e.target;
-		console.log(inputChange.value);    
-	    }); 
-		//modification de la quantie et du prixTotal
-
-
 	    let divItemConSetD = document.createElement("div");
 	    divItemConSetD.setAttribute("class","cart__item__content__settings__delete");
 		
@@ -245,49 +263,10 @@ function asd(idProduit,colores,quanLS){
 	    pDelete.setAttribute("class","deleteItem");
 	    let pDeleteText = document.createTextNode("Supprimer");
 
-
-			//delete item Test leme//
-	    ////////////////////////////////////////////
-	    pDelete.addEventListener('click', function(e){
-	    var buttonClicked = e.target
-	    buttonClicked.parentElement.parentElement.parentElement.parentElement.remove()
-	    
-
-	    //Attribution de la balise <article> a une variable "article"
-	    article = buttonClicked.parentElement.parentElement.parentElement.parentElement;
-	    data_id = article.getAttribute("data-id");
-	    couleur = article.getAttribute("data-color");
-
-
-	    //pour effacer un element depuis le localStorage a partir de sa cle 
-	    tab = JSON.parse(localStorage.getItem(data_id));
-	    //parcour les clefs et l'efface 
-	    for (let i = 0; i < localStorage.length; i++){
-		const key = localStorage.key(i);
-		if( data_id === key && tab.length == 1){//ajouter la condition que le contenu de la clef est egale a 1 
-		    localStorage.removeItem(localStorage.key(i));
-		}
-		//parcour le tableau (valeur de la clef) a la recherche de la couleur ds le cas ou la clef aurait plusieur valeurs 
-		else if(data_id === key && tab.length > 1 ){
-		    for (let w = 0; w < tab.length ; w++){
-			if ( tab[w].couleur === couleur){
-			    tab.splice(w, 1);//w cible le numero de la ligne ds le tableau, 1 pr effacer {!! bizarre !!}
-			    localStorage.setItem(localStorage.key(i), JSON.stringify(tab));
-			}
-		    }
-		}
-	    }
-	});
-
-
-//////////////////////A regler
-    prixTotal += r.price * quanLS;//fonctionne a merveille
-    document.getElementById("totalPrice").innerHTML=`${prixTotal}`;
-//////////////////////A regler
+	    //Creation des balises qui seront afficher ds la page html
 
 
 	    //mise en boite :
-
 	    section.appendChild(article); 
 
 	    article.appendChild(divImg);
@@ -316,229 +295,171 @@ function asd(idProduit,colores,quanLS){
 
 	    divItemConSetD.appendChild(pDelete);
 	    pDelete.appendChild(pDeleteText);
+	    //mise en boite :
 
-	    //Creation des balises qui seront afficher ds la page html
 
+
+
+	    //efface la balise "article" contenant le produit
+	    pDelete.addEventListener('click', (elementArticle) => effacerElement(elementArticle));
+
+	    //Affiche le total d'article qd la page est fige: 
+	    totalArticlesEtSommesStatique(article,divItemConD.children[2]);
+		//(signification des variables)
+//	    article => Quantite de cannape
+//	    divItemConD.children[2] => prix de ce dernier
+
+	    //Affiche le total d'article qd l'utilisateur change la quantitee d'article: 
+	    input.addEventListener('change', (Qte) => totalArticlesEtSommesDynamique(Qte,divItemConD,article));
 
 	});
 }
+function totalArticlesEtSommesDynamique(Qte,prixDuCannape,article){
+    Qte = Qte.target.value;
+    prixDuCannape = prixDuCannape.children[2].innerText.replace(/\D/g, "");
+    articleIdProduit = article.getAttribute("data-id");
+    articleCouleur = article.getAttribute("data-color");
+    
+    miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte,prixDuCannape);
+
+    prixTotalArticles(); 
+    
+    document.getElementById("totalQuantity").innerText=`${Qte}`;
+    document.getElementById("totalPrice").innerText=`${prixDuCannape*Qte}`;
+}
 
 
-//a regler plus tard (bonne chance a moi meme, crois moi, tu en auras bien besoin )
+function prixTotalArticles(){
+    console.log(localStorage.key);
+
+for(let w = 0; w < localStorage.length ; w++){
+    tableau = JSON.parse(localStorage.getItem(localStorage.key(w)));
+    prixCannapeLocalStorage = tableau[0].prix;
+
+    //calculer le nb total de quantite :
+    if (tableau.length > 1){
+	for (s = 0 ; s < tableau.length ; s++){
+	    quantiteCannapeLocalStorage = 0; 
+	    quantiteCannapeLocalStorage += tableau[s].quantite;
+	    prixTotalDynamique += quantiteCannapeLocalStorage * prixCannapeLocalStorage;
+	}
+    }
+    else if (tableau.length == 1) {
+	quantiteCannapeLocalStorage = tableau[0].quantite;
+	prixTotalDynamique += quantiteCannapeLocalStorage * prixCannapeLocalStorage;
+    } 
+
+    quantiteCannapeLocalStorage = 0; 
+
+    console.log("Total est : "+prixTotalDynamique+" euro");
+
+    }
+    document.getElementById("totalPrice").innerText=`${prixTotalDynamique}`;
+    console.log("Total2 caso : "+prixTotalDynamique+" euro");
+}
+
+
+//ajouter la securitee sur les valeurs d'entree !
+function miseAjourLocalStorage(idProduit,couleur,quantite,prixDuCannape){
+	console.log("caso againnnnn !!!!");
+	//new
+	quantite = Math.floor(quantite);
+	//new
+	prixDuCannape = Math.floor(prixDuCannape);
+	let booleen = false;
+
+	for (let e = 0 ; e < localStorage.length ; e++){
+	    if ( localStorage.key(e) == idProduit){
+		booleen = true;
+	    break;
+	    }
+	}
+	if (booleen == true){
+	    tableau = JSON.parse(localStorage.getItem(idProduit));
+
+	    //on verifie la presence de la couleur
+	    for (q = 0; q < tableau.length ; q++){
+		if ( tableau[q].couleur == couleur){
+		    tableau[q].quantite = quantite;
+//hmmm
+		//creation d'un tableau:
+		tableau[q] = {"quantite" : quantite, "couleur" : couleur, "prix" : prixDuCannape};
+		//enregistrement du tableau sur le disk client
+		localStorage.setItem(idProduit, JSON.stringify(tableau));
+		}
+	    }
+	}
+
+}
+
+
+
+
+
+function totalArticlesEtSommesStatique(QteDeCannape,prixDuCannape){
+
+    QteDeCannape = QteDeCannape.querySelector("input").getAttribute("value");
+    //on retravaille la balise "p" pour extraire la valeur sans le signe "euro" pr pouvoir calculer avec apres 
+    prixDuCannape = prixDuCannape.innerText.replace(/\D/g, "");
+    
+    valeurTotalInput += QteDeCannape*1 ;//je ne sais pas pk, mais j'etais certain que cela allait fonctionner de cette mannier !!!!
+
+    document.getElementById("totalQuantity").innerText=`${valeurTotalInput}`;
+    prixTotalStatique += prixDuCannape*QteDeCannape ;
+    
+    document.getElementById("totalPrice").innerText=`${prixTotalStatique}`;
+
+}
+
+
+
+
+
+
+
+
+//Fonction qui permet d'effacer la balise "article" contenant le produit que l'on souhaite enlever du panier depuis la page html et aussi, depuis le "localStorage" 
+
+function effacerElement(elementArticle){
+
+	    var buttonClicked = elementArticle.target
+	    buttonClicked.parentElement.parentElement.parentElement.parentElement.remove()
+	    
+
+	    //Attribution de la balise <article> a une variable "article"
+	    article = buttonClicked.parentElement.parentElement.parentElement.parentElement;
+	    data_id = article.getAttribute("data-id");
+	    couleur = article.getAttribute("data-color");
+
+
+	    //pour effacer un element depuis le localStorage a partir de sa cle 
+	    tab = JSON.parse(localStorage.getItem(data_id));
+	    //parcour les clefs et l'efface 
+	    for (let i = 0; i < localStorage.length; i++){
+		const key = localStorage.key(i);
+		if( data_id === key && tab.length === 1){//ajouter la condition que le contenu de la clef est egale a 1 
+		    localStorage.removeItem(localStorage.key(i));
+		}
+		//parcour le tableau (valeur de la clef) a la recherche de la couleur ds le cas ou la clef aurait plusieurs valeurs 
+		else if(data_id === key && tab.length > 1 ){
+		    for (let w = 0; w < tab.length ; w++){
+			if ( tab[w].couleur === couleur){
+			    tab.splice(w, 1);//w cible le numero de la ligne ds le tableau, 1 pr effacer {!! bizarre !!}
+			    localStorage.setItem(localStorage.key(i), JSON.stringify(tab));
+			    }
+			}
+		    }
+		}
+}
+
+
+
+
+
+
 /*
-	    //Validation de la commande ://
-	/////////////////////////////////////////
-		
-
-	//creation de l'objet à envoyer au server
-        
-        const dataToSend = { contact,products };
-            
-        //creation de l'init pour le fetch
-        
-        const monInit = {
-            method: 'POST',
-            body: JSON.stringify(dataToSend),
-            headers: {
-            	'Content-Type': 'application/json'
-            }
-         };
-
-        //creation de la requete pour le fetch
-         
-        let maRequete = new Request(`http://localhost:3000/api/products/order/`, monInit);
-
-        //appel du fetch et envoie des data
-        
-        fetch(maRequete, monInit)
-        	.then(response => response.json())
-        	.then(data => {
-         
-         //vidange du local storage
-         
-         localStorage.clear(); 
-         
-         //recupération de l'id dans les données en réponse
-         
-         localStorage.setItem('orderId', data.orderId);
-         
-         //redirection
-         document.location.href = 'confirmation.html?id=' + data.orderId;
-      });
-
-	    /////////////////////////////////////////
-		//Validation de la commande ://
-
-*/
-
-
-
-
-
-
-//on a prefere ne pas garder le prix des articles ds le localStorage, 
-//pr eviter sa manipulation, et c'est pour cela que l'utilisation des valeurs des prix depuis l'api semble etre la plus securise (leme)
-//
-//On ne fait qui lire les prix depuis la page html (document {objet js})pr faire le calcule du prix Total, mais les donnees envoye a l'api pr la commande general, va avoir le prix par article (depuis une api aussi).
-//Seul le nb d'article et le prix total seront envoyer pour subir une verification* et un traitement  *(ds le cas ou l'utitilisateur ou autre a modife le prix total en question ) 
-//
-//Formulaire :
-//on conseillerait les clients de passer par des api pour les adresses pour faciliter l'aquesition des donnees et d'avoir des resultats les plus juste possible 
-//
-//
-//timeStamp(utiliser cette fct), avec fonction de hashage qui prend en valeur en micro seconde
-//micro
-//ex: var microtime = (Date.now() % 1000) / 1000;
-
-
-/* ne fonctionne pas ds la boucle ??? bizarre
-    let pQuantiteTxt = document.createTextNode(`Qte : ${tab[0].quantite} `);
-*/
-
-
-//tmp/
-//////////////////////////////////////////////////////////////////
-//fct pour voir les donnees de produit de l'api a travers la console
-function apiTab(){
-fetch("http://127.0.0.1:3000/api/products/")
-    .then(data => data.json())
-    .then((dataFinal) => console.table(dataFinal));
-}
-//////////////////////////////////////////////////////////////////
-
-
-
-
-
-			//code a regler//
-//////////////////////////////////////////////////////////////////
-/*
-
-//Fonctionne
-//avoir le prix sur une variable depuis l'api (reussi!!!)
-let idProduit = localStorage.key(0); let obj;
-fetch(`http://127.0.0.1:3000/api/products/${idProduit}`)
-  .then(res => res.json())
-    .then(data => obj = data)
-
-//Ne fonctionne pas, et c'est cette fonction qui doit marcher
-function calc(quanLS,idProduit){
-let obj = 0;
-fetch(`http://127.0.0.1:3000/api/products/${idProduit}`)
-    .then(res => res.json())
-	.then(data => obj = data)
-	    console.log(obj);//sa ne marche pas !!!
-    //		prixTotal += quanLS * obj.price;
-	  //	    return prixTotal;
-Soluce :il faut mettre les parentheses sur .then(data => {...}
-}
-fonctionne !!
-function calc(quanLS,idProduit){
-let obj = 0;
-    fetch(`http://127.0.0.1:3000/api/products/${idProduit}`)
-    .then(res => res.json())
-	.then(data => {
-	    obj = data;
-		console.log(obj.price);
-    })		                                      
-}
-*/
-/////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////
-/*
-let articleCart = document.querySelectorAll(".cart__item");//FUCK YOU JSfrom the buttom of my BALLS !!!!! (fonctionne sur les elements deja present la page html et non pas apres (no se pq)
-console.log(articleCart);
-
-
-const vbn = document.body;
-console.log(vbn);
-    const removeCartItemButtons = document.getElementsByClassName("deleteItem");
-    console.log(removeCartItemButtons);//sa marche ici BORDELLLLL
-    console.log(removeCartItemButtons.length);// PK ??????????????????????????????????????????????????? PUT11111111111111!!!!!!
-/////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////
-function calc(quanLS,idProduit){
-    fetch(`http://127.0.0.1:3000/api/products/${idProduit}`)
-	.then(data => data.json())
-	.then((t) => {  
-	    prixTotal += quanLS * t.price;
-	    //fonctionne 	    
-	    //return prixTotal; //ne fonctionne pas
-    });
-}
-/////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////
-function effacerArticle(){
-    const removeCartItemButtons = document.getElementsByClassName("deleteItem");
-    console.log(removeCartItemButtons);//sa marche ici BORDELLLLL
-    console.log(removeCartItemButtons.length);// PK ??????????????????????????????????????????????????? PUT11111111111111!!!!!!
-    button.addEventListener('click', function(){
-    console.log('click')
-    })
-//    for (var i = 0; i < removeCartItemButtons.length; i++){
-	//var button = removeCartItemButtons[i];
-
-    /*
-    button.addEventListener('click', function(event){
-    var buttonClicked = event.target
-    buttonClicked.parentElement.parentElement.remove()
-    })
-}
-*/
-/////////////////////////////////////////////////////////
-		//delete item Test//
-/////////////////////////////////////////////////////////
-	/*
-	    pDelete.addEventListener('click', function(){
-	    article.innerHTML = "";
-	    //let a = this.closest('article');
-	    //a.innerHTML = "";   
-	    });*/
-/////////////////////////////////////////////////////////
-
-// a perfectionner (regler l'affichage du prix total)
-function afficheArticlePrix(a){
-	    //a regler plus tart (prixTotal) 
-    let totalQuantiteArticle = document.getElementById("totalQuantity");
-    totalQuantiteArticleTxt = document.createTextNode(`${a}`);
-    totalQuantiteArticle.appendChild(totalQuantiteArticleTxt);
-/*
-    let totalPrixArticle = document.getElementById("totalPrice");
+//////////////////////A regler
     prixTotal += r.price * quanLS;//fonctionne a merveille
-    console.log(prixTotal);		
-    totalPrixArticleTxt = document.createTextNode(`${prixTotal}`);
-    //innerHTML pr remplacer par la dernier valeur (ecraser) 
-    totalPrixArticle.appendChild(totalPrixArticleTxt);
+    document.getElementById("totalPrice").innerText=`${prixTotal}`;
+//////////////////////A regler
 */
-}
-//////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-/*
-// TRUCK EFFACER 
-//  a garder jusqu'a la fin du projet
-let idProduit = localStorage.key(0);
-tab = JSON.parse(localStorage.getItem(`${idProduit}`));
-console.log(tab[0].couleur);
-
-let tableauTT = [];
-
-//leme
-    document.querySelector(".deleteItem").addEventListener('click', function(e){
-	var buttonClicked = e.target
-	buttonClicked.parentElement.parentElement.parentElement.parentElement.remove()
-    });
-//leme
-*/
-
-

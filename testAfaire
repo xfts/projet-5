@@ -1,0 +1,3 @@
+on peut securiser la fonction "totalArticlesEtSommesDynamique" avec le faite de recuperer le prix depuis l'api au lieu de la recuperer depuis la page "html" car cette dernier peut etre modifier par l'utilisateur
+
+

@@ -1,4 +1,4 @@
-function asd(){
+function affichageDivCanape(){
     fetch("http://127.0.0.1:3000/api/products")
 	.then(data => data.json())
 	.then((dataFinal) => {
@@ -36,7 +36,7 @@ function asd(){
 	});
 }
 
-asd();
+affichageDivCanape();
 
 
 //pour voir le tableau dans la console (pr moi)
@@ -44,24 +44,4 @@ fetch("http://127.0.0.1:3000/api/products")
     .then(data => data.json())
     .then(dataFinal => produits = dataFinal)
     .then(() => console.table(produits))
-
-/*
-    for (i = 0 ; i < 9 ; i++){
-	console.log("voici les noms de cannape :" + produits.name);
-    //plus besoin, 'forEachin' fait l'affaire en mieux !!! 
-    }
-
-
-/////////voir tableau api
-fetch("http://127.0.0.1:3000/api/products")
-    .then(data => data.json())
-    .then(dataFinal => produits = dataFinal)
-    .then(() => console.table(produits))
-/////////voir tableau api
-
-
-*/
-
-
-/* Fetch is asynchronous. You can’t assign data recieved in async outside of asynchronous scope. So you need to perform all actions you need inside of .then()*/
 
