@@ -1,38 +1,8 @@
 //(variable global)
 let a = 0; //nbr de d'article 
-let prixTotalStatique = 0;//operationel
-let valeurTotalInput =0;//operationel
-
-
-let prixTotalDynamique = 0;
-let quantiteCannapeLocalStorage = 0; 
-/*
-for(let w = 0; w < localStorage.length ; w++){
-    tableau = JSON.parse(localStorage.getItem(localStorage.key(w)));
-    prixCannapeLocalStorage = tableau[0].prix;
-
-    //calculer le nb total de quantite :
-    if (tableau.length > 1){
-	for (s = 0 ; s < tableau.length ; s++){
-	    quantiteCannapeLocalStorage = 0; 
-	    quantiteCannapeLocalStorage += tableau[s].quantite;
-	    prixTotalDynamique += quantiteCannapeLocalStorage * prixCannapeLocalStorage;
-	}
-    }
-    else if (tableau.length == 1) {
-	quantiteCannapeLocalStorage = tableau[0].quantite;
-	prixTotalDynamique += quantiteCannapeLocalStorage * prixCannapeLocalStorage;
-    } 
-
-    quantiteCannapeLocalStorage = 0; 
-
-    console.log("Total est : "+prixTotalDynamique+" euro");
-
-}
-*/
-
-
-
+let prixTotal = 0;
+let quantiteTotalDeCannapeDuMemeType = 0; 
+let quantiteTotalDeCannapes = 0;
 
 
 recupereDataLocalStorage();
@@ -303,34 +273,52 @@ function afficheProduit(idProduit,colores,quanLS){
 	    //efface la balise "article" contenant le produit
 	    pDelete.addEventListener('click', (elementArticle) => effacerElement(elementArticle));
 
-	    //Affiche le total d'article qd la page est fige: 
-	    totalArticlesEtSommesStatique(article,divItemConD.children[2]);
-		//(signification des variables)
-//	    article => Quantite de cannape
-//	    divItemConD.children[2] => prix de ce dernier
 
-	    //Affiche le total d'article qd l'utilisateur change la quantitee d'article: 
-	    input.addEventListener('change', (Qte) => totalArticlesEtSommesDynamique(Qte,divItemConD,article));
+	    //Affiche le total d'article et la somme total 
+	    totalArticlesEtPrixTotal(); 
+
+	    //utilisateur qui modifie la qte et qui est mise a jour
+	    input.addEventListener('change', (Qte) => modificationDeQuantite(Qte,divItemConD,article));
 
 	});
 }
-function totalArticlesEtSommesDynamique(Qte,prixDuCannape,article){
+
+
+function modificationDeQuantite(Qte,prixDuCannape,article){
     Qte = Qte.target.value;
     prixDuCannape = prixDuCannape.children[2].innerText.replace(/\D/g, "");
     articleIdProduit = article.getAttribute("data-id");
     articleCouleur = article.getAttribute("data-color");
-    
-    miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte,prixDuCannape);
 
-    prixTotalArticles(); 
-    
-    document.getElementById("totalQuantity").innerText=`${Qte}`;
-    document.getElementById("totalPrice").innerText=`${prixDuCannape*Qte}`;
+    //Verification de la quantitee entree par l'utilisateur
+    if (Qte <= 100 && Qte > 0 ){
+	miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte,prixDuCannape);
+	totalArticlesEtPrixTotal(); 
+    }
+    else if (Qte > 100 || Qte <= -100 ){
+	Qte = 100 ;
+	miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte,prixDuCannape);
+	totalArticlesEtPrixTotal(); 
+    }
+    else if (Qte < 0 && Qte > - 101){
+	Qte = Qte*(-1);
+	miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte,prixDuCannape);
+	totalArticlesEtPrixTotal(); 
+    }
+    else if (Qte === 0){
+	console.log("valeur null non accepter");
+//	effacerElement(article);//ne fonctionne pas
+    }
+    else {
+	console.log("donnee entree par l'utilisateur erronee");
+    }
 }
 
+    
 
-function prixTotalArticles(){
-    console.log(localStorage.key);
+function totalArticlesEtPrixTotal(){
+
+quantiteTotalDeCannapes = 0;//initialisation de la variable, car la fonction "afficheProduit" est une boucle qui va utiliser toutes les fonctions a l'interieur au meme nombre de fois que d'element "article" a afficher
 
 for(let w = 0; w < localStorage.length ; w++){
     tableau = JSON.parse(localStorage.getItem(localStorage.key(w)));
@@ -339,33 +327,35 @@ for(let w = 0; w < localStorage.length ; w++){
     //calculer le nb total de quantite :
     if (tableau.length > 1){
 	for (s = 0 ; s < tableau.length ; s++){
-	    quantiteCannapeLocalStorage = 0; 
-	    quantiteCannapeLocalStorage += tableau[s].quantite;
-	    prixTotalDynamique += quantiteCannapeLocalStorage * prixCannapeLocalStorage;
+	    quantiteTotalDeCannapeDuMemeType = 0; 
+	    quantiteTotalDeCannapeDuMemeType += tableau[s].quantite;
+
+	    quantiteTotalDeCannapes += tableau[s].quantite;
+
+	    prixTotal += quantiteTotalDeCannapeDuMemeType * prixCannapeLocalStorage;
 	}
     }
     else if (tableau.length == 1) {
-	quantiteCannapeLocalStorage = tableau[0].quantite;
-	prixTotalDynamique += quantiteCannapeLocalStorage * prixCannapeLocalStorage;
+	quantiteTotalDeCannapeDuMemeType = tableau[0].quantite;
+	
+	quantiteTotalDeCannapes += tableau[0].quantite;
+	
+	prixTotal += quantiteTotalDeCannapeDuMemeType * prixCannapeLocalStorage;
     } 
 
-    quantiteCannapeLocalStorage = 0; 
-
-    console.log("Total est : "+prixTotalDynamique+" euro");
-
+    quantiteTotalDeCannapeDuMemeType = 0; 
     }
-    document.getElementById("totalPrice").innerText=`${prixTotalDynamique}`;
-    console.log("Total2 caso : "+prixTotalDynamique+" euro");
+
+    document.getElementById("totalQuantity").innerText=`${quantiteTotalDeCannapes}`;
+    document.getElementById("totalPrice").innerText = `${prixTotal}`;
+    prixTotal = 0;
 }
 
 
-//ajouter la securitee sur les valeurs d'entree !
 function miseAjourLocalStorage(idProduit,couleur,quantite,prixDuCannape){
-	console.log("caso againnnnn !!!!");
-	//new
 	quantite = Math.floor(quantite);
-	//new
 	prixDuCannape = Math.floor(prixDuCannape);
+
 	let booleen = false;
 
 	for (let e = 0 ; e < localStorage.length ; e++){
@@ -391,30 +381,6 @@ function miseAjourLocalStorage(idProduit,couleur,quantite,prixDuCannape){
 	}
 
 }
-
-
-
-
-
-function totalArticlesEtSommesStatique(QteDeCannape,prixDuCannape){
-
-    QteDeCannape = QteDeCannape.querySelector("input").getAttribute("value");
-    //on retravaille la balise "p" pour extraire la valeur sans le signe "euro" pr pouvoir calculer avec apres 
-    prixDuCannape = prixDuCannape.innerText.replace(/\D/g, "");
-    
-    valeurTotalInput += QteDeCannape*1 ;//je ne sais pas pk, mais j'etais certain que cela allait fonctionner de cette mannier !!!!
-
-    document.getElementById("totalQuantity").innerText=`${valeurTotalInput}`;
-    prixTotalStatique += prixDuCannape*QteDeCannape ;
-    
-    document.getElementById("totalPrice").innerText=`${prixTotalStatique}`;
-
-}
-
-
-
-
-
 
 
 
@@ -450,16 +416,10 @@ function effacerElement(elementArticle){
 			}
 		    }
 		}
+	    totalArticlesEtPrixTotal(); 
 }
 
 
 
 
 
-
-/*
-//////////////////////A regler
-    prixTotal += r.price * quanLS;//fonctionne a merveille
-    document.getElementById("totalPrice").innerText=`${prixTotal}`;
-//////////////////////A regler
-*/

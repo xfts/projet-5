@@ -1,8 +1,4 @@
-//regler le typeof  "quantite" (la mettre en string ou en int) et travailler avec !!! (le plus gros est derrier refreeee 
-
-
-
-//recupe l'id du produit a travers l'url et la met sous une variable globale
+//recupere l'id du produit a travers l'url et la met sous une variable globale
 const url =  new URLSearchParams(window.location.search);
 let idProduit = url.get('id');
 
@@ -11,7 +7,7 @@ afficheProduit();
 
 
 
-//genere les balises html et les affiches sur la page
+//Genere les balises html et les affichent sur la page
 function afficheProduit(){
 
     fetch(`http://127.0.0.1:3000/api/products/${idProduit}`)
@@ -24,7 +20,6 @@ function afficheProduit(){
 	    img.setAttribute("src", r.imageUrl);
 	    img.setAttribute("alt", r.altTxt);
 	    divClass.item(0).appendChild(img); 
-//	    divClass.appendChild(img);//ne fonctionne pas, je ne sais pas pk
 
 	    //titre
 	    let title = document.getElementById("title");
@@ -66,13 +61,10 @@ function elementsToLocalStorage(){
     const couleur = document.getElementById("colors");
     let quantiteString = document.getElementById("quantity");
     let prixDuCannape = document.getElementById("price");
-    // r.price;
 
 	
-//transforme les variables "prixDuCannape" et  "quatiteString" en nbr(int) //parseInt equivalent 
-	//old
-    //prixDuCannape = prixDuCannape.innerText.replace(/\D/g, "");
-    //new
+    //transforme les variables "prixDuCannape" et  "quatiteString" en nbr(int) <=> parseInt equivalent 
+	
     prixDuCannape = Math.floor(prixDuCannape.innerText);
     const quantite = Math.floor(quantiteString.value);
 
