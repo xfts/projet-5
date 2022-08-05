@@ -1,8 +1,3 @@
-//(variable global)
-let a = 0; //nbr de d'article 
-let prixTotal = 0;
-let quantiteTotalDeCannapeDuMemeType = 0; 
-let quantiteTotalDeCannapes = 0;
 
 
 recupereDataLocalStorage();
@@ -135,6 +130,7 @@ form.addEventListener('submit', function(e){
 
 
 function recupereDataLocalStorage(){
+let a = 0; //nbr de d'article 
 
     for (let e = 0 ; e < localStorage.length ; e++){
     //on recupe la clef (identifiant du produit) depuis le localStorage
@@ -317,6 +313,9 @@ function modificationDeQuantite(Qte,prixDuCannape,article){
     
 
 function totalArticlesEtPrixTotal(){
+let prixTotal = 0;
+let quantiteTotalDeCannapeDuMemeType = 0; 
+let quantiteTotalDeCannapes = 0;
 
 quantiteTotalDeCannapes = 0;//initialisation de la variable, car la fonction "afficheProduit" est une boucle qui va utiliser toutes les fonctions a l'interieur au meme nombre de fois que d'element "article" a afficher
 
