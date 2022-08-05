@@ -1,5 +1,3 @@
-
-
 recupereDataLocalStorage();
 
 
@@ -33,6 +31,7 @@ form.city.addEventListener('change', function(){
 //*********** Validation autre ***********//
 const validAutre = function(entrezAutre){
 //creation de la reg exp pour validation d'autre
+    console.log("caaaaasoooo : "+entrezAutre.value);
     let autreRegExp = new RegExp(
     '^[A-Za-z,-]{3,25}[-]{0,1}[A-Za-z]{0,25}[\ \]{0,4}$'
     );
@@ -313,11 +312,10 @@ function modificationDeQuantite(Qte,prixDuCannape,article){
     
 
 function totalArticlesEtPrixTotal(){
-let prixTotal = 0;
-let quantiteTotalDeCannapeDuMemeType = 0; 
-let quantiteTotalDeCannapes = 0;
-
-quantiteTotalDeCannapes = 0;//initialisation de la variable, car la fonction "afficheProduit" est une boucle qui va utiliser toutes les fonctions a l'interieur au meme nombre de fois que d'element "article" a afficher
+//initialisation de la variable, car la fonction "afficheProduit" est une boucle qui va utiliser toutes les fonctions a l'interieur au meme nombre de fois que d'element "article" a afficher
+    let prixTotal = 0;
+    let quantiteTotalDeCannapeDuMemeType = 0; 
+    let quantiteTotalDeCannapes = 0;
 
 for(let w = 0; w < localStorage.length ; w++){
     tableau = JSON.parse(localStorage.getItem(localStorage.key(w)));
