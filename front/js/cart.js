@@ -1,118 +1,132 @@
+//prixCannapeLocalStorage = tableau.key(i).fetch.prix, en gros, on attribue le prix du prix du cannape depuis l'api a travers la variable prixCa... 
+
 recupereDataLocalStorage();
 
+let contact = null;
 
-
+function creationDeContact(contact){
+    console.log("caso again dude : "+contact);
+}
+ 
 
 			//formulaire//
 /////////////////////////////////////////////////////////////////
+
+
 let form = document.querySelector('.cart__order__form');
 
-//Ecouter la modification de l'email
-form.email.addEventListener('change', function(){
-    validEmail(this);
+//Ecouter la modification d'autre ( <=> nom, prenom et ville): 
+
+form.firstName.addEventListener('change', function(){
+    validAutre(this,"firstName");
 });
+
+form.lastName.addEventListener('change', function(){
+    validAutre(this,"lastName");
+});
+
+form.city.addEventListener('change', function(){
+    validAutre(this,"city");
+});
+
 
 //Ecouter la modification de l'adresse 
 form.address.addEventListener('change', function(){
     validAdress(this);
 });
 
-//Ecouter la modification d'autre 
-form.firstName.addEventListener('change', function(){
-    validAutre(this);
+//Ecouter la modification de l'email
+form.email.addEventListener('change', function(){
+    validEmail(this);
 });
-form.lastName.addEventListener('change', function(){
-    validAutre(this);
-});
-form.city.addEventListener('change', function(){
-    validAutre(this);
-});
+ 
 
 //*********** Validation autre ***********//
-const validAutre = function(entrezAutre){
+
+
+const validAutre = function(entrezAutre,typeDeMot){
 //creation de la reg exp pour validation d'autre
-    console.log("caaaaasoooo : "+entrezAutre.value);
+
     let autreRegExp = new RegExp(
     '^[A-Za-z,-]{3,25}[-]{0,1}[A-Za-z]{0,25}[\ \]{0,4}$'
     );
     //On test l'expression reguliere
     let testAutre = autreRegExp.test(entrezAutre.value);
 
+    //on va retourner cette valeur pour l'objet "Contact"
 
     //message qui permet de voir si l'autre a le bon format 
-    let a = entrezAutre.nextElementSibling;
+    let messageErreurAffichage = entrezAutre.nextElementSibling;
+
+
     if(testAutre){
-	a.innerHTML = 'mot Valide';
-	a.style.color='green';//pb ici, le vert ne s'enleve pas
-	a.classList.remove('text-danger');//enleve la class css
-	a.classList.add('text-success');
-	return true;
+        messageErreurAffichage.innerHTML = '';
+    
+        //console.log("type & value are : "+typeDeMot+" => "+ entrezAutre.value);    
+        creationDeContact(typeDeMot+":"+entrezAutre.value);
+        
 	}
     else{
-	a.innerHTML = 'mot non valide';
-	a.classList.remove('text-danger');//enleve la class css
-	a.classList.add('text-success');
-    return false;
+        messageErreurAffichage.innerHTML = 'mot non valide';
+        messageErreurAffichage.style.color='#fbbcbc';
     }
+
 };
 
+
+
 //*********** Validation adress ***********//
+
+
 const validAdress = function(entrezAdress){
 //creation de la reg exp pour validation d'adress
     let adressRegExp = new RegExp(
     '^[0-9]{2,3}[\ \]{1,4}[A-Za-z]{3,25}[\ \]{0,4}[A-Za-z,-]{0,25}[\ \]{0,4}[A-Za-z,-]{0,25}[\ \]{0,4}$'
     //ds le cas ou le nom est long (ex 12 avenue des etats-unis {toulouse})
     );
+
     //On test l'expression reguliere
     let testAdress = adressRegExp.test(entrezAdress.value);
 
     //message qui permet de voir si l'adress a le bon format 
     let a = entrezAdress.nextElementSibling;
     if(testAdress){
-	a.innerHTML = 'adresse Valide';
-	a.style.color='green';
-	a.classList.remove('text-danger');//enleve la class css
-	a.classList.add('text-success');
-	return true;
+        a.innerHTML = '';
 	}
     else{
-	a.innerHTML = 'non valide';
-	a.style.color='#fbbcbc';
-	a.classList.remove('text-danger');//enleve la class css
-	a.classList.add('text-success');
-    return false;
+        a.innerHTML = 'adresse non valide';
+        a.style.color='#fbbcbc';
     }
 };
+ 
 
 //*********** Validation Email ***********//
+
+
 const validEmail = function(entrezEmail){
 //creation de la reg exp pour validation d'email
     let emailRegExp = new RegExp(
     '^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$','g'
     );//erreur avec @ !!!!
+
     //On test l'expression reguliere
     let testEmail = emailRegExp.test(entrezEmail.value);
 
     //message qui permet de voir si l'adress email a le bon format 
     let a = entrezEmail.nextElementSibling;
+
     if(testEmail){
-	a.innerHTML = 'courriel Valide';
-	a.style.color='green';
-	a.classList.remove('text-danger');//enleve la class css
-	a.classList.add('text-success');
-	return true;
+        a.innerHTML = '';
 	}
     else{
-	a.innerHTML = 'adress no valide';
-	a.style.color='#fbbcbc';
-	a.classList.remove('text-danger');//enleve la class css
-	a.classList.add('text-success');
-    return false;
+        a.innerHTML = 'adresse courriel no valide';
+        a.style.color='#fbbcbc';
     }
 };
 
-//bug qlq que part
+//bug qlq que part //pb regler, regarde la nouvel fct en bas !
 //Ecouter la soumission du formulaire
+function commander(){
 form.addEventListener('submit', function(e){
     e.preventDefault();
     if (validEmail(form.email) && validAutre(form.Autre) && validAdress(form.adress)){
@@ -123,6 +137,9 @@ form.addEventListener('submit', function(e){
 	console.log('erreur ds le formulaire');
     }
 });
+}
+
+
 /////////////////////////////////////////////////////////////////
 			//formulaire//
 
@@ -419,4 +436,77 @@ function effacerElement(elementArticle){
 
 
 
+///////////////////////////////////TESTE?/////////////////////////////
+
+
+
+//creation de numero de commande :
+//console.log(new Date().valueOf());
+
+//################################
+//creation de l'objet à envoyer a API
+/*
+const contact = {
+    firstName : 'bob',
+    lastName : 'caso', 
+    address : 'usaOfBoumako',
+    city : 'bamako',
+    email : 'asd@asd.as'
+};
+
+const products = [{
+    id : '034707184e8e4eefb46400b5a3774b5f',
+    colors :"red", 
+    quantite : '3'
+}];
+
+const dataToSend = { contact , products };
+
+
+//creation de l'init pour le fetch
+const monInit = {
+    method: 'POST',
+    body: JSON.stringify(dataToSend),
+    headers: {
+        'Content-Type': 'application/json'
+    }
+};
+
+//creation de la requete pour le fetch
+let maRequete = new Request(`http://localhost:3000/api/products/order`, monInit);
+
+
+//appel du fetch et envoie des data
+fetch(maRequete, monInit)
+    .then(response => response.json())
+    .then(data => {
+        console.log("data"+data);
+        //vidange du local storage
+//        localStorage.clear(); 
+
+        //recupération de l'id dans les données en réponse
+//        localStorage.setItem('orderId', data.orderId);
+
+        //redirection
+//        document.location.href = 'confirmation.html?id=' + data.orderId;
+    })
+
+
+*/
+//################################
+
+//bouton "envoyer" DOM, event fonctionnel !
+/*
+commander = document.getElementById('order');
+
+commander.addEventListener('click', () => { 
+    console.log("we done here");
+    submitData();
+});
+*/
+
+
+
+
+///////////////////////////////////TESTE?/////////////////////////////
 
