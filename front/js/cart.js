@@ -9,8 +9,11 @@ recupereDataLocalStorageEtLAffiche();
 
     //formulaire//
 /////////////////////////////////////////////////////////////////
+
+
+
 //Contact variable globale :
-/*commentaire  tmp 
+/* tmp 
 let variableContact = {
     firstName:null ,
     lastName: null,
@@ -18,6 +21,7 @@ let variableContact = {
     city: null,
     email:null 
 };
+
 let variableContact = {
     firstName:"bob" ,
     lastName: "cata",
@@ -26,11 +30,9 @@ let variableContact = {
     email: "asd@asd.as"
 };
 
-commentaire  tmp */
 
 
-//tmp
-//remplire le formulaire 
+//remplissage du formulaire 
 /*
 let p = document.getElementById("firstName");
 p.value = "bob";
@@ -45,6 +47,7 @@ e.value = "asd@asd.as";
 */
 //tmp
 
+
 let variableContact = {
     firstName:null ,
     lastName: null,
@@ -52,6 +55,7 @@ let variableContact = {
     city: null,
     email:null 
 };
+
 
 
 let form = document.querySelector('.cart__order__form');
@@ -190,69 +194,38 @@ function putUserInputInOrder(type,contact){
 
 
 function verificationDesDonnesEntree(){
-    let booleen = false;
-
-    if ( (variableContact.firstName === null || variableContact.lastName === null || variableContact.address === null || variableContact.city === null || variableContact.email === null) && localStorage.length === 0){
-        console.log("champ manquant ds la variable contact");
-        console.log("localStorage vide <=> panier vide ");
-        array = [booleen, null];
-        return array;
-    }
-    else if ( (variableContact.firstName === null || variableContact.lastName === null || variableContact.address === null || variableContact.city === null || variableContact.email === null) && localStorage.length !== 0){
-        console.log("champ manquant ds la variable contact");
-        booleen = false;
-        array = [booleen, null];
-        return array;
-    }
-    else if ( localStorage.length === 0){
-        console.log("localStorage vide <=> panier vide ");
-        booleen = false;
-        array = [booleen, null];
+    
+    if ( (variableContact.firstName !== null || variableContact.lastName !== null || variableContact.address !== null || variableContact.city !== null || variableContact.email !== null) && localStorage.length !== 0){
+        const donneeProduit_A_envoyer = JSON.stringify(localStorage);
+        const contact_A_envoyer = variableContact;
+        const array = [contact_A_envoyer,donneeProduit_A_envoyer]
         return array;
     }
     else {
-        let donneeProduit_A_envoyer = JSON.stringify(localStorage);
-        booleen = true;
-        array = [booleen, donneeProduit_A_envoyer];
-        return array ;
+        console.log("champ manquant ds la variable contact ou localStorage vide <=> panier vide ");
     }
 }
 
 
-//Ecouter la soumission du formulaire
+//envoie des donnees a l'API:
 function boutonCommander(){
+
+    const array = verificationDesDonnesEntree()
+    const contact = array[0];
+    const produits = array[1];
+      
+    //creation de numero de commande :
+    const id_commande = new Date().valueOf();
+
     //contient la reponse et la valeur du tableau de produit commander
-    const array = verificationDesDonnesEntree();
-    booleen = array[0];
-
-    if ( booleen == true){
-        //creation de numero de commande :
-        const id_commande = new Date().valueOf();
-
-        send_order_To_API(variableContact,array[1],id_commande);
-    }
-    else if ( booleen == false){
-        console.log("champs de saisie (contact) et/ou commande produit non disponible");
-    }
-    else if ( booleen == undefined){
-        console.log("erreur de la fct verificationDesDonnesEntree");
-    }
-    else{
-        console.log("error non connue");
-    }
-    
-}
-
-function send_order_To_API(contact, products,id_commande){
-
-    console.log("contact :"+contact.lastName);
-    console.log("products :"+products);
+    console.log("contact : "+contact.lastName);
+    console.log("produits : "+produits);
     console.log("id :"+id_commande);
 
 
 
     //creation de l'objet à envoyer a API
-    const dataToSend = { contact , products };
+    const dataToSend = { contact , produits };
 
     //creation de l'init pour le fetch
     const monInit = {
@@ -283,7 +256,9 @@ function send_order_To_API(contact, products,id_commande){
             window.location.href = "./confirmation.html";
         })
     */
+
 }
+
 
 
 
