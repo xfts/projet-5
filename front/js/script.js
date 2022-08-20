@@ -33,7 +33,10 @@ function affichageDivCanape(){
 		idItems.appendChild(a);
 
 		});
-	});
+	})
+    .catch( () =>{
+        console.log("serveur backEnd non fonctionnel");
+    });
 }
 
 affichageDivCanape();

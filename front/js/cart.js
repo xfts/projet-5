@@ -1,19 +1,12 @@
 
-
-
-
 recupereDataLocalStorageEtLAffiche();
 
 
-
-
-    //formulaire//
+                        //formulaire//
 /////////////////////////////////////////////////////////////////
 
 
-
-//Contact variable globale :
-/* tmp 
+//variable contact
 let variableContact = {
     firstName:null ,
     lastName: null,
@@ -21,46 +14,10 @@ let variableContact = {
     city: null,
     email:null 
 };
-
-let variableContact = {
-    firstName:"bob" ,
-    lastName: "cata",
-    address: "22 rue de sentier",
-    city: "gaucha",
-    email: "asd@asd.as"
-};
-
-
-
-//remplissage du formulaire 
-/*
-let p = document.getElementById("firstName");
-p.value = "bob";
-let ln = document.getElementById("lastName");
-ln.value = "cata";
-let addr = document.getElementById("address");
-addr.value = "22 rue de sentier";
-let v = document.getElementById("city");
-v.value = "gaucha";
-let e = document.getElementById("email");
-e.value = "asd@asd.as";
-*/
-//tmp
-
-
-let variableContact = {
-    firstName:null ,
-    lastName: null,
-    address: null,
-    city: null,
-    email:null 
-};
-
-
 
 let form = document.querySelector('.cart__order__form');
 
-//Ecouter la modification d'autre ( <=> nom, prenom et ville): 
+//Ecouter la modification d'autre ( => nom, prenom et ville): 
 
 form.firstName.addEventListener('change', function(){
     validAutre(this,"firstName");
@@ -90,26 +47,26 @@ form.email.addEventListener('change', function(){
 
 
 const validAutre = function(entrezAutre,typeDeMot){
-//creation de la reg exp pour validation d'autre
+    //creation de la reg exp pour validation d'autre
 
-let autreRegExp = new RegExp(
-'^[A-Za-z,-]{3,25}[-]{0,1}[A-Za-z]{0,25}[\ \]{0,4}$'
-);
-//On test l'expression reguliere
-let testAutre = autreRegExp.test(entrezAutre.value);
+    let autreRegExp = new RegExp(
+    '^[A-Za-z,-]{3,25}[-]{0,1}[A-Za-z]{0,25}[\ \]{0,4}$'
+    );
+    //On test l'expression reguliere
+    let testAutre = autreRegExp.test(entrezAutre.value);
 
-//message qui permet de voir si l'autre a le bon format 
-let messageErreurAffichage = entrezAutre.nextElementSibling;
+    //message qui permet de voir si l'autre a le bon format 
+    let messageErreurAffichage = entrezAutre.nextElementSibling;
 
 
-if(testAutre){
-    messageErreurAffichage.innerHTML = '';
-    putUserInputInOrder(typeDeMot,entrezAutre.value);
-}
-else{
-    messageErreurAffichage.innerHTML = 'mot non valide';
-    messageErreurAffichage.style.color='#fbbcbc';
-}
+    if(testAutre){
+        messageErreurAffichage.innerHTML = '';
+        putUserInputInOrder(typeDeMot,entrezAutre.value);
+    }
+    else{
+        messageErreurAffichage.innerHTML = 'mot non valide';
+        messageErreurAffichage.style.color='#fbbcbc';
+    }
 
 };
 
@@ -119,25 +76,25 @@ else{
 
 
 const validAdress = function(entrezAdress,typeDeMot){
-//creation de la reg exp pour validation d'adress
-let adressRegExp = new RegExp(
-'^[0-9]{2,3}[\ \]{1,4}[A-Za-z]{3,25}[\ \]{0,4}[A-Za-z,-]{0,25}[\ \]{0,4}[A-Za-z,-]{0,25}[\ \]{0,4}$'
-//ds le cas ou le nom est long (ex 12 avenue des etats-unis {toulouse})
-);
+    //creation de la reg exp pour validation d'adress
+    let adressRegExp = new RegExp(
+    '^[0-9]{1,3}[\ \]{1,4}[A-Za-z]{3,25}[\ \]{0,4}[A-Za-z,-]{0,25}[\ \]{0,4}[A-Za-z,-]{0,25}[\ \]{0,4}$'
+    //ds le cas ou le nom est long (ex 12 avenue des etats-unis {toulouse})
+    );
 
-//On test l'expression reguliere
-let testAdress = adressRegExp.test(entrezAdress.value);
+    //On test l'expression reguliere
+    let testAdress = adressRegExp.test(entrezAdress.value);
 
-//message qui permet de voir si l'adress a le bon format 
-let a = entrezAdress.nextElementSibling;
-if(testAdress){
-    a.innerHTML = '';
-    putUserInputInOrder(typeDeMot,entrezAdress.value);
-}
-else{
-    a.innerHTML = 'adresse non valide';
-    a.style.color='#fbbcbc';
-}
+    //message qui permet de voir si l'adress a le bon format 
+    let a = entrezAdress.nextElementSibling;
+    if(testAdress){
+        a.innerHTML = '';
+        putUserInputInOrder(typeDeMot,entrezAdress.value);
+    }
+    else{
+        a.innerHTML = 'adresse non valide';
+        a.style.color='#fbbcbc';
+    }
 };
 
 
@@ -145,26 +102,25 @@ else{
 
 
 const validEmail = function(entrezEmail,typeDeMot){
-//creation de la reg exp pour validation d'email
-let emailRegExp = new RegExp(
-    /^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/
-);
+    //creation de la reg exp pour validation d'email
+    let emailRegExp = new RegExp(
+        /^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,8})(\.[a-z]{2,8})?$/
+    );
 
+    //On test l'expression reguliere
+    let testEmail = emailRegExp.test(entrezEmail.value);
 
-//On test l'expression reguliere
-let testEmail = emailRegExp.test(entrezEmail.value);
+    //message qui permet de voir si l'adress email a le bon format 
+    let a = entrezEmail.nextElementSibling;
 
-//message qui permet de voir si l'adress email a le bon format 
-let a = entrezEmail.nextElementSibling;
-
-if(testEmail){
-    a.innerHTML = '';
-    putUserInputInOrder(typeDeMot,entrezEmail.value);
-}
-else{
-    a.innerHTML = 'adresse courriel non valide';
-    a.style.color='#fbbcbc';
-}
+    if(testEmail){
+        a.innerHTML = '';
+        putUserInputInOrder(typeDeMot,entrezEmail.value);
+    }
+    else{
+        a.innerHTML = 'adresse courriel non valide';
+        a.style.color='#fbbcbc';
+    }
 };
 
 
@@ -195,75 +151,79 @@ function putUserInputInOrder(type,contact){
 
 function verificationDesDonnesEntree(){
     
-    if ( (variableContact.firstName !== null || variableContact.lastName !== null || variableContact.address !== null || variableContact.city !== null || variableContact.email !== null) && localStorage.length !== 0){
+    if ( (variableContact.firstName !== null && variableContact.lastName !== null && variableContact.address !== null && variableContact.city !== null && variableContact.email !== null) && localStorage.length !== 0){
         const donneeProduit_A_envoyer = JSON.stringify(localStorage);
         const contact_A_envoyer = variableContact;
-        const array = [contact_A_envoyer,donneeProduit_A_envoyer]
+        const array = [0,contact_A_envoyer,donneeProduit_A_envoyer]
         return array;
     }
     else {
-        console.log("champ manquant ds la variable contact ou localStorage vide <=> panier vide ");
+        console.log("champs manquant dans la variable 'contact' ou 'localStorage' vide");
+        const erreur = [1,'error'];
+        return erreur;
     }
 }
 
 
 //envoie des donnees a l'API:
 function boutonCommander(){
-
     const array = verificationDesDonnesEntree()
-    const contact = array[0];
-    const produits = array[1];
-      
-    //creation de numero de commande :
-    const id_commande = new Date().valueOf();
 
-    //contient la reponse et la valeur du tableau de produit commander
-    console.log("contact : "+contact.lastName);
-    console.log("produits : "+produits);
-    console.log("id :"+id_commande);
+    if ( array[0] === 0){
 
+            const contact = array[1];
+            const products = array[2];
+              
+            //creation de numero de commande :
+            const id_commande = new Date().valueOf();
 
+            //creation de l'objet à envoyer a API
+            const dataToSend = { contact , products };
 
-    //creation de l'objet à envoyer a API
-    const dataToSend = { contact , produits };
+            //creation de l'init pour le fetch
+            const monInit = {
+                method: 'POST',
+                body: JSON.stringify(dataToSend),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
 
-    //creation de l'init pour le fetch
-    const monInit = {
-        method: 'POST',
-        body: JSON.stringify(dataToSend),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
+            //creation de la requete pour le fetch
+            let maRequete = new Request('http://localhost:3000/api/products/order', monInit);
 
-    //creation de la requete pour le fetch
-    let maRequete = new Request(`http://localhost:3000/api/products/order`, monInit);
+            //appel du fetch et envoie des data
+            fetch(maRequete, monInit)
+                .then(response => response.json())
+                .then(data => {
 
-    /* pb, ne fonctionne pas !!!
-    //appel du fetch et envoie des data
-    fetch(maRequete, monInit)
-        .then(response => response.json())
-        .then(data => {
+                    //vidange du local storage
+             //       localStorage.clear(); 
 
-            //vidange du local storage
-            localStorage.clear(); 
+                    //recupération de l'id dans les données en réponse
+            //        localStorage.setItem('orderId', data.orderId);
 
-            //recupération de l'id dans les données en réponse
-            localStorage.setItem('orderId', data.orderId);
-
-            //redirection
-            document.location.href = 'confirmation.html?id=' + data.orderId;
-            window.location.href = "./confirmation.html";
-        })
-    */
-
+                    //redirection
+         //           document.location.href = 'confirmation.html?id=' + data.orderId;
+          //          window.location.href = "./confirmation.html";
+                })
+                .catch( () =>{
+                    console.log("erreur cote api");
+                });
+    }
+    else if ( array[0] === 1){
+        console.log("erreur au niveau de la fonction 'verificationDesDOnnes'");
+    }
+    else { 
+        console.log("erreur non connue");
+    }
 }
 
 
 
 
 let order = document.getElementById('order');
-//order.addEventListener('click', () => boutonCommander());
+order.addEventListener('click', () => boutonCommander());
 
 
 
@@ -272,7 +232,7 @@ let order = document.getElementById('order');
 
 
 /////////////////////////////////////////////////////////////////
-        //formulaire//
+                        //formulaire//
 
 
 
@@ -286,11 +246,11 @@ function recupereDataLocalStorageEtLAffiche(){
         //on recupre les elements de la clef sous format JSON (string par defaut)
         tab = JSON.parse(localStorage.getItem(`${idProduit}`));
 
-        //Attribution des elements a des variables 
+        //Attribution des elements a des variables
         let quanLS = tab[0].quantite; //quantSL : quantite localStorage
         let colores = tab[0].couleur;
 
-        afficheProduit(idProduit,colores,quanLS);    
+        afficheProduit(idProduit,colores,quanLS);
         a++;
 
         //Enclanche l'affichage des elements du meme id mais avec des characteristiques autres ("couleur","quantite" ds le cas present) 
@@ -299,9 +259,9 @@ function recupereDataLocalStorageEtLAffiche(){
                 let quanLS = tab[i].quantite;
                 let colores = tab[i].couleur;
 
-                afficheProduit(idProduit,colores,quanLS);    
+                afficheProduit(idProduit,colores,quanLS);
                 a++;
-            }   
+            }
         }
     }
 }
@@ -319,8 +279,8 @@ function afficheProduit(idProduit,colores,quanLS){
 
             //creation de la balises article :
             var article = document.createElement("article");
-            article.setAttribute("class", "cart__item"); 
-            article.setAttribute("data-id", `${idProduit}`); 
+            article.setAttribute("class", "cart__item");
+            article.setAttribute("data-id", `${idProduit}`);
             article.setAttribute("data-color", `${colores}`);
 
 
@@ -355,7 +315,7 @@ function afficheProduit(idProduit,colores,quanLS){
             divItemConS.setAttribute("class", "cart__item__content__settings");
 
             let divItemConSetQ = document.createElement("div");
-            divItemConSetQ.setAttribute("class","cart__item__content__settings__quantity"); 
+            divItemConSetQ.setAttribute("class","cart__item__content__settings__quantity");
             let pQuantite = document.createElement("p");
             let pQuantiteTxt = document.createTextNode("Qte : ");
 
@@ -380,7 +340,7 @@ function afficheProduit(idProduit,colores,quanLS){
 
 
             //mise en boite :
-            section.appendChild(article); 
+            section.appendChild(article);
 
             article.appendChild(divImg);
             divImg.appendChild(img);
@@ -411,18 +371,68 @@ function afficheProduit(idProduit,colores,quanLS){
             //mise en boite :
 
 
-
             //efface la balise "article" contenant le produit
             pDelete.addEventListener('click', (elementArticle) => effacerElement(elementArticle));
 
 
-            //Affiche le total d'article et la somme total 
-            totalArticlesEtPrixTotal(); 
-
             //utilisateur qui modifie la qte et qui est mise a jour
-            input.addEventListener('change', (Qte) => modificationDeQuantite(Qte,divItemConD,article));
+            input.addEventListener('change', (Qte) => modificationDeQuantite(Qte,divItemConD,article,r.price));
 
+        })
+        .catch( () => {
+            console.log("serveur backEnd non fonctionnel ou fonction(s) non operationnel");
         });
+
+    //Affiche le total d'article et la somme total 
+    totalArticlesEtPrixTotal();
+}
+
+function recherche_Prix_API(tableau_API,key_localStorage){
+    let prix ;
+    for ( i = 0 ; i < tableau_API.length ; i++){
+        if ( key_localStorage === tableau_API[i]._id){
+            prix = tableau_API[i].price;
+        }
+    }
+    return prix;  
+}
+
+
+function totalArticlesEtPrixTotal(){
+    fetch('http://localhost:3000/api/products')
+        .then (data => data.json())
+        .then ((tableau_API) => {
+
+            let prixTotal = 0;
+            let quantiteTotalDeCannapeDuMemeType = 0;
+            let quantiteTotalDeCannapes = 0;
+            
+            for(let w = 0; w < localStorage.length ; w++){
+                tableau = JSON.parse(localStorage.getItem(localStorage.key(w)));
+                prix = recherche_Prix_API(tableau_API,localStorage.key(w));
+                if (tableau.length == 1) {
+                    quantiteTotalDeCannapeDuMemeType = tableau[0].quantite;
+                    quantiteTotalDeCannapes += tableau[0].quantite;
+                    prixTotal += quantiteTotalDeCannapeDuMemeType * prix;
+                }
+                //calculer le nb total de quantite :
+                else if (tableau.length > 1){
+                    for (s = 0 ; s < tableau.length ; s++){
+                        quantiteTotalDeCannapeDuMemeType = 0;
+                        quantiteTotalDeCannapeDuMemeType += tableau[s].quantite;
+
+                        quantiteTotalDeCannapes += tableau[s].quantite;
+
+                        prixTotal += quantiteTotalDeCannapeDuMemeType * prix;
+                    }
+                }
+            quantiteTotalDeCannapeDuMemeType = 0;
+            
+            }
+            document.getElementById("totalQuantity").innerText=`${quantiteTotalDeCannapes}`;
+            document.getElementById("totalPrice").innerText = `${prixTotal}`;
+            prixTotal = 0;
+        })
 }
 
 
@@ -435,17 +445,17 @@ function modificationDeQuantite(Qte,prixDuCannape,article){
     //Verification de la quantitee entree par l'utilisateur
     if (Qte <= 100 && Qte > 0 ){
         miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte,prixDuCannape);
-        totalArticlesEtPrixTotal(); 
+        totalArticlesEtPrixTotal();
     }
     else if (Qte > 100 || Qte <= -100 ){
         Qte = 100 ;
         miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte,prixDuCannape);
-        totalArticlesEtPrixTotal(); 
+        totalArticlesEtPrixTotal();
     }
     else if (Qte < 0 && Qte > - 101){
         Qte = Qte*(-1);
         miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte,prixDuCannape);
-        totalArticlesEtPrixTotal(); 
+        totalArticlesEtPrixTotal();
     }
     else if (Qte === 0){
         console.log("valeur null non accepter");
@@ -457,46 +467,8 @@ function modificationDeQuantite(Qte,prixDuCannape,article){
 
 
 
-function totalArticlesEtPrixTotal(){
-    //initialisation de la variable, car la fonction "afficheProduit" est une boucle qui va utiliser toutes les fonctions a l'interieur au meme nombre de fois que d'element "article" a afficher
-    let prixTotal = 0;
-    let quantiteTotalDeCannapeDuMemeType = 0; 
-    let quantiteTotalDeCannapes = 0;
-
-    for(let w = 0; w < localStorage.length ; w++){
-        tableau = JSON.parse(localStorage.getItem(localStorage.key(w)));
-        prixCannapeLocalStorage = tableau[0].prix;
-
-    //calculer le nb total de quantite :
-        if (tableau.length > 1){
-            for (s = 0 ; s < tableau.length ; s++){
-                quantiteTotalDeCannapeDuMemeType = 0; 
-                quantiteTotalDeCannapeDuMemeType += tableau[s].quantite;
-
-                quantiteTotalDeCannapes += tableau[s].quantite;
-
-                prixTotal += quantiteTotalDeCannapeDuMemeType * prixCannapeLocalStorage;
-            }
-        }
-        else if (tableau.length == 1) {
-            quantiteTotalDeCannapeDuMemeType = tableau[0].quantite;
-
-            quantiteTotalDeCannapes += tableau[0].quantite;
-        
-            prixTotal += quantiteTotalDeCannapeDuMemeType * prixCannapeLocalStorage;
-        } 
-    quantiteTotalDeCannapeDuMemeType = 0; 
-    }
-
-    document.getElementById("totalQuantity").innerText=`${quantiteTotalDeCannapes}`;
-    document.getElementById("totalPrice").innerText = `${prixTotal}`;
-    prixTotal = 0;
-}
-
-
-function miseAjourLocalStorage(idProduit,couleur,quantite,prixDuCannape){
+function miseAjourLocalStorage(idProduit,couleur,quantite){
     quantite = Math.floor(quantite);
-    prixDuCannape = Math.floor(prixDuCannape);
 
     let booleen = false;
 
@@ -514,7 +486,7 @@ function miseAjourLocalStorage(idProduit,couleur,quantite,prixDuCannape){
             if ( tableau[q].couleur == couleur){
                 tableau[q].quantite = quantite;
                 //creation d'un tableau:
-                tableau[q] = {"quantite" : quantite, "couleur" : couleur, "prix" : prixDuCannape};
+                tableau[q] = {"quantite" : quantite, "couleur" : couleur};
                 //enregistrement du tableau sur le disk client
                 localStorage.setItem(idProduit, JSON.stringify(tableau));
             }
@@ -558,5 +530,7 @@ function effacerElement(elementArticle){
     }
     totalArticlesEtPrixTotal(); 
 }
+
+
 
 
