@@ -1,4 +1,3 @@
-
 recupereDataLocalStorageEtLAffiche();
 
 
@@ -18,7 +17,6 @@ let variableContact = {
 let form = document.querySelector('.cart__order__form');
 
 //Ecouter la modification d'autre ( => nom, prenom et ville): 
-
 form.firstName.addEventListener('change', function(){
     validAutre(this,"firstName");
 });
@@ -64,7 +62,7 @@ const validAutre = function(entrezAutre,typeDeMot){
         putUserInputInOrder(typeDeMot,entrezAutre.value);
     }
     else{
-        messageErreurAffichage.innerHTML = 'mot non valide';
+        messageErreurAffichage.innerHTML = 'non valide';
         messageErreurAffichage.style.color='#fbbcbc';
     }
 
@@ -127,6 +125,7 @@ const validEmail = function(entrezEmail,typeDeMot){
 
 //cette fonction recupere les "input" des utilisateurs et les met dans l'ordre 
 function putUserInputInOrder(type,contact){
+    //partie contact :
     if (type === "firstName"){
         variableContact.firstName = contact;
     }
@@ -142,6 +141,14 @@ function putUserInputInOrder(type,contact){
     else if (type === "email"){
         variableContact.email = contact;
     }
+    //partie panier produit:
+    else if (type === 'panierProduit'){
+        tabl = [];
+        for (i = 0; i < localStorage.length; i++){
+            tabl  [i] = localStorage.key(i); 
+        }
+        return tabl;
+    }
     else {
         console.log("erreur de saisie");
     }
@@ -152,13 +159,13 @@ function putUserInputInOrder(type,contact){
 function verificationDesDonnesEntree(){
     
     if ( (variableContact.firstName !== null && variableContact.lastName !== null && variableContact.address !== null && variableContact.city !== null && variableContact.email !== null) && localStorage.length !== 0){
-        const donneeProduit_A_envoyer = JSON.stringify(localStorage);
+        const donneeProduit_A_envoyer = putUserInputInOrder('panierProduit')
         const contact_A_envoyer = variableContact;
         const array = [0,contact_A_envoyer,donneeProduit_A_envoyer]
         return array;
     }
     else {
-        console.log("champs manquant dans la variable 'contact' ou 'localStorage' vide");
+        console.log("champs manquant dans la variable 'contact' ou 'localStorage' qui doit etre vide");
         const erreur = [1,'error'];
         return erreur;
     }
@@ -166,55 +173,44 @@ function verificationDesDonnesEntree(){
 
 
 //envoie des donnees a l'API:
-function boutonCommander(){
+function boutonCommander(event){
     const array = verificationDesDonnesEntree()
 
     if ( array[0] === 0){
+        event.preventDefault()
 
             const contact = array[1];
             const products = array[2];
               
-            //creation de numero de commande :
-            const id_commande = new Date().valueOf();
-
-            //creation de l'objet à envoyer a API
-            const dataToSend = { contact , products };
-
             //creation de l'init pour le fetch
             const monInit = {
                 method: 'POST',
-                body: JSON.stringify(dataToSend),
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify( {contact, products} )
             };
 
             //creation de la requete pour le fetch
-            let maRequete = new Request('http://localhost:3000/api/products/order', monInit);
+            let maRequete = new Request('http://localhost:3000/api/products/order');
 
-            //appel du fetch et envoie des data
+            //appel du fetch et envoie des donnees
             fetch(maRequete, monInit)
                 .then(response => response.json())
                 .then(data => {
-
-                    //vidange du local storage
-             //       localStorage.clear(); 
-
-                    //recupération de l'id dans les données en réponse
-            //        localStorage.setItem('orderId', data.orderId);
-
-                    //redirection
-         //           document.location.href = 'confirmation.html?id=' + data.orderId;
-          //          window.location.href = "./confirmation.html";
+                    localStorage.clear(); 
+                    window.location.href = `./confirmation.html?id_commande=${data.orderId}`;
                 })
                 .catch( () =>{
                     console.log("erreur cote api");
                 });
     }
     else if ( array[0] === 1){
+        event.preventDefault()
         console.log("erreur au niveau de la fonction 'verificationDesDOnnes'");
     }
     else { 
+        event.preventDefault()
         console.log("erreur non connue");
     }
 }
@@ -223,7 +219,7 @@ function boutonCommander(){
 
 
 let order = document.getElementById('order');
-order.addEventListener('click', () => boutonCommander());
+order.addEventListener('click', () => boutonCommander(event));
 
 
 
@@ -376,7 +372,7 @@ function afficheProduit(idProduit,colores,quanLS){
 
 
             //utilisateur qui modifie la qte et qui est mise a jour
-            input.addEventListener('change', (Qte) => modificationDeQuantite(Qte,divItemConD,article,r.price));
+            input.addEventListener('change', (Qte) => modificationDeQuantite(Qte,article));
 
         })
         .catch( () => {
@@ -436,25 +432,24 @@ function totalArticlesEtPrixTotal(){
 }
 
 
-function modificationDeQuantite(Qte,prixDuCannape,article){
+function modificationDeQuantite(Qte,article){
     Qte = Qte.target.value;
-    prixDuCannape = prixDuCannape.children[2].innerText.replace(/\D/g, "");
     articleIdProduit = article.getAttribute("data-id");
     articleCouleur = article.getAttribute("data-color");
 
     //Verification de la quantitee entree par l'utilisateur
     if (Qte <= 100 && Qte > 0 ){
-        miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte,prixDuCannape);
+        miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte);
         totalArticlesEtPrixTotal();
     }
     else if (Qte > 100 || Qte <= -100 ){
         Qte = 100 ;
-        miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte,prixDuCannape);
+        miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte);
         totalArticlesEtPrixTotal();
     }
     else if (Qte < 0 && Qte > - 101){
         Qte = Qte*(-1);
-        miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte,prixDuCannape);
+        miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte);
         totalArticlesEtPrixTotal();
     }
     else if (Qte === 0){
@@ -530,7 +525,4 @@ function effacerElement(elementArticle){
     }
     totalArticlesEtPrixTotal(); 
 }
-
-
-
 

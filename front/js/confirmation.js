@@ -1,13 +1,8 @@
+//recupere l'id_commande a travers l'url et la met sous une variable globale
+const url =  new URLSearchParams(window.location.search);
+let id_Commande = url.get('id_commande');
 
-
-fetch("http://127.0.0.1:3000/api/products/order")
-    .then(data => data.json())
-	.then((dataFinal) => {
-	    console.log(dataFinal)
-    });
-
-
-
-
-
+//affichage :
+const span_Order_Id = document.getElementById("orderId");
+span_Order_Id.innerText = id_Commande;
 

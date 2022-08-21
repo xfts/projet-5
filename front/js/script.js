@@ -40,11 +40,3 @@ function affichageDivCanape(){
 }
 
 affichageDivCanape();
-
-
-//pour voir le tableau dans la console (pr moi)
-fetch("http://127.0.0.1:3000/api/products")
-    .then(data => data.json())
-    .then(dataFinal => produits = dataFinal)
-    .then(() => console.table(produits))
-
