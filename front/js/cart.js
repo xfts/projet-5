@@ -202,7 +202,7 @@ function boutonCommander(event){
                     window.location.href = `./confirmation.html?id_commande=${data.orderId}`;
                 })
                 .catch( () =>{
-                    console.log("erreur cote api");
+					alert("service non disponible pour le moment, veuillez reessayer ulterieurement !");
                 });
     }
     else if ( array[0] === 1){
@@ -233,30 +233,37 @@ order.addEventListener('click', () => boutonCommander(event));
 
 
 function recupereDataLocalStorageEtLAffiche(){
-    let a = 0; //nbr de d'article 
+    if ( localStorage.length === 0){
+       alert("votre panier est vide, vous allez être redirigé vers la page principal !");
+        window.location.href = './index.html';
+    }
+    else if ( localStorage.length > 0){
 
-    for (let e = 0 ; e < localStorage.length ; e++){
-        //on recupe la clef (identifiant du produit) depuis le localStorage
-        let idProduit = localStorage.key(e);
+        let a = 0; //nbr de d'article 
 
-        //on recupre les elements de la clef sous format JSON (string par defaut)
-        tab = JSON.parse(localStorage.getItem(`${idProduit}`));
+        for (let e = 0 ; e < localStorage.length ; e++){
+            //on recupe la clef (identifiant du produit) depuis le localStorage
+            let idProduit = localStorage.key(e);
 
-        //Attribution des elements a des variables
-        let quanLS = tab[0].quantite; //quantSL : quantite localStorage
-        let colores = tab[0].couleur;
+            //on recupre les elements de la clef sous format JSON (string par defaut)
+            tab = JSON.parse(localStorage.getItem(`${idProduit}`));
 
-        afficheProduit(idProduit,colores,quanLS);
-        a++;
+            //Attribution des elements a des variables
+            let quanLS = tab[0].quantite; //quantSL : quantite localStorage
+            let colores = tab[0].couleur;
 
-        //Enclanche l'affichage des elements du meme id mais avec des characteristiques autres ("couleur","quantite" ds le cas present) 
-        if ( tab.length > 1){
-            for (let i = 1 ; i < tab.length ; i++){
-                let quanLS = tab[i].quantite;
-                let colores = tab[i].couleur;
+            afficheProduit(idProduit,colores,quanLS);
+            a++;
 
-                afficheProduit(idProduit,colores,quanLS);
-                a++;
+            //Enclanche l'affichage des elements du meme id mais avec des characteristiques autres ("couleur","quantite" ds le cas present) 
+            if ( tab.length > 1){
+                for (let i = 1 ; i < tab.length ; i++){
+                    let quanLS = tab[i].quantite;
+                    let colores = tab[i].couleur;
+
+                    afficheProduit(idProduit,colores,quanLS);
+                    a++;
+                }
             }
         }
     }
@@ -393,7 +400,6 @@ function recherche_Prix_API(tableau_API,key_localStorage){
     return prix;  
 }
 
-
 function totalArticlesEtPrixTotal(){
     fetch('http://localhost:3000/api/products')
         .then (data => data.json())
@@ -432,7 +438,11 @@ function totalArticlesEtPrixTotal(){
 }
 
 
+
 function modificationDeQuantite(Qte,article){
+
+	const input = document.getElementsByClassName("itemQuantity");
+
     Qte = Qte.target.value;
     articleIdProduit = article.getAttribute("data-id");
     articleCouleur = article.getAttribute("data-color");
@@ -444,16 +454,22 @@ function modificationDeQuantite(Qte,article){
     }
     else if (Qte > 100 || Qte <= -100 ){
         Qte = 100 ;
+
+		input.itemQuantity.value = Qte;
+
         miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte);
         totalArticlesEtPrixTotal();
     }
     else if (Qte < 0 && Qte > - 101){
         Qte = Qte*(-1);
+
+		input.itemQuantity.value = Qte;
+
         miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte);
         totalArticlesEtPrixTotal();
     }
     else if (Qte === 0){
-        console.log("valeur null non accepter");
+        alert("veuillez choisir une valeur entre 1 et 100 et merci");
     }
     else {
         console.log("donnee entree par l'utilisateur erronee");
@@ -494,6 +510,11 @@ function miseAjourLocalStorage(idProduit,couleur,quantite){
 //Fonction qui permet d'effacer la balise "article" contenant le produit que l'on souhaite enlever du panier depuis la page html et aussi, depuis le "localStorage" 
 
 function effacerElement(elementArticle){
+	
+
+let confirmAction = confirm("etes vous bien certain de vouloir effacer cette article ?");
+	if (confirmAction) {
+
 
     var buttonClicked = elementArticle.target
     buttonClicked.parentElement.parentElement.parentElement.parentElement.remove()
@@ -524,5 +545,8 @@ function effacerElement(elementArticle){
         }
     }
     totalArticlesEtPrixTotal(); 
+
+}
+
 }
 

@@ -1,3 +1,7 @@
+affichageDivCanape();
+
+
+//recupere tous les elements de cannape depuis l'API et les affichent sur la page web
 function affichageDivCanape(){
     fetch("http://127.0.0.1:3000/api/products")
 	.then(data => data.json())
@@ -35,8 +39,7 @@ function affichageDivCanape(){
 		});
 	})
     .catch( () =>{
-        console.log("serveur backEnd non fonctionnel");
+		alert("le service n'est pas disponible pour le moment, veuillez ressayer ulterieurement");
     });
 }
 
-affichageDivCanape();

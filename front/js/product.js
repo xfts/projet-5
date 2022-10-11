@@ -48,8 +48,10 @@ function afficheProduit(){
 	    let boutonAjouter = document.getElementById('addToCart');
 	    boutonAjouter.addEventListener('click', () => elementsToLocalStorage());
 
+	})
+	.catch( () =>{
+		alert("le service n'est pas disponible pour le moment, veuillez ressayer ulterieurement");
 	});
-
 }
 
 
@@ -80,7 +82,7 @@ function elementsToLocalStorage(){
 	    console.log("id produit existe dans le localStorage");
 	    tableau = JSON.parse(localStorage.getItem(idProduit));
 	    let i = tableau.length;
-	    let aaa = 1; //pour s'assurer que la boucle verifie tout les elements du tableau avant de passer a la condition suivant
+	    let a = 1; //pour s'assurer que la boucle verifie tout les elements du tableau avant de passer a la condition suivant
 
 	    //on verifie la presence de la couleur
 	    for (q = 0; q < tableau.length ; q++){
@@ -97,10 +99,10 @@ function elementsToLocalStorage(){
 			localStorage.setItem(idProduit, JSON.stringify(tableau));
 		    }
 
-		    aaa = 0;
+		    a = 0;
 		}
 	    }
-	    if ( aaa === 1){
+	    if ( a === 1){
 
 		//creation d'un tableau:
 		tableau[i] = {"quantite" : quantite, "couleur" : couleur.value};
@@ -122,32 +124,44 @@ function elementsToLocalStorage(){
 	else{
 	console.log("erreur no connue !");
 	}
-	
-	window.location.href = "./cart.html";	
+  redirectionSurPagePanier();
+}
 
-    }
-
-	//cette partie est pour simplifier le debugage !!!!
+	//message pour l'utilisateur en cas de saisie errone
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
     else if (couleur.selectedIndex == 0 && quantite == 0 || quantite > 100){
-	console.log("veuillez choisir une couleur et une quantitee entre 1 et 100 svp");//a faire apparaite sur la page web !!!!
+		alert("veuillez choisir une couleur et une quantitee entre 1 et 100 svp");//a faire apparaite sur la page web !!!!
     }
-    else if (couleur.selectedIndex == 0){
-	console.log("veuillez choisir une couleur svp");//a faire apparaite sur la page web !!!!
+	else if (couleur.selectedIndex == 0){
+		alert("veuillez choisir une couleur svp");//a faire apparaite sur la page web !!!!
     }
     else if (quantite > 100 || quantite == 0){
-	console.log("veuillez choisir un nombre entre 1 et 100");//a faire apparaite sur la page web !!!!
+		alert("veuillez choisir un nombre entre 1 et 100");//a faire apparaite sur la page web !!!!
     }
     else{
-	console.log("erreur de saisie depuis l'interface graphique du site !");
+		console.log("erreur de saisie depuis l'interface graphique du site !");
     }
+
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
-	//cette partie est pour simplifier le debugage !!!!
+	//message pour l'utilisateur en cas de saisie errone
 }
 
 
 
 
+
+//redirige l'utilisateur vers la page panier ou la page principal en fonction du son choix 
+function redirectionSurPagePanier() {
+	let message = confirm("voulez vous continuer vers votre panier ?");
+
+	if (message == true){
+		window.location.href = "./cart.html";	
+	}
+	else if(message == false){
+		alert("nous allons vous rediriger à la page principal, votre commande a bien été prise en compte");
+		window.location.href = "./index.html";	
+	}
+}
