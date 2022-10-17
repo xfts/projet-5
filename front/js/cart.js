@@ -437,15 +437,29 @@ function totalArticlesEtPrixTotal(){
         })
 }
 
+/*
+    console.log("input article");
+    console.log(article.children);
 
+    const inputValue = article.children[1].children[1].children[0].children[1].value;
+    console.log(inputValue);
+
+*/
 
 function modificationDeQuantite(Qte,article){
 
-	const input = document.getElementsByClassName("itemQuantity");
+	//const input = document.getElementsByClassName("itemQuantity");
 
     Qte = Qte.target.value;
     articleIdProduit = article.getAttribute("data-id");
     articleCouleur = article.getAttribute("data-color");
+
+    //tmp:
+    articleValeur = article.children[1].children[1].children[0].children[1].value;
+
+    console.log("articleValeur avant condition : ");
+    console.log(articleValeur);
+    //tmp//
 
     //Verification de la quantitee entree par l'utilisateur
     if (Qte <= 100 && Qte > 0 ){
@@ -454,16 +468,26 @@ function modificationDeQuantite(Qte,article){
     }
     else if (Qte > 100 || Qte <= -100 ){
         Qte = 100 ;
+		//input.itemQuantity.value = Qte;
 
-		input.itemQuantity.value = Qte;
+        //tmp:
+		articleValeur = Qte;
+        console.log("articleValeur cond > 100 || <= -100 : ");
+        console,log(articleValeur);
+        //tmp//
 
         miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte);
         totalArticlesEtPrixTotal();
     }
     else if (Qte < 0 && Qte > - 101){
         Qte = Qte*(-1);
+		//input.itemQuantity.value = Qte;
 
-		input.itemQuantity.value = Qte;
+        //tmp:
+		articleValeur = Qte;
+        console.log("articleValeur cond < 0 && > - 101 : ");
+        console.log(articleValeur);
+        //tmp//
 
         miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte);
         totalArticlesEtPrixTotal();
