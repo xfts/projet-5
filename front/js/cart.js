@@ -74,6 +74,7 @@ const validAutre = function(entrezAutre,typeDeMot){
 
 
 const validAdress = function(entrezAdress,typeDeMot){
+
     //creation de la reg exp pour validation d'adress
     let adressRegExp = new RegExp(
     '^[0-9]{1,3}[\ \]{1,4}[A-Za-z]{3,25}[\ \]{0,4}[A-Za-z,-]{0,25}[\ \]{0,4}[A-Za-z,-]{0,25}[\ \]{0,4}$'
@@ -85,6 +86,7 @@ const validAdress = function(entrezAdress,typeDeMot){
 
     //message qui permet de voir si l'adress a le bon format 
     let a = entrezAdress.nextElementSibling;
+
     if(testAdress){
         a.innerHTML = '';
         putUserInputInOrder(typeDeMot,entrezAdress.value);
@@ -234,7 +236,7 @@ order.addEventListener('click', () => boutonCommander(event));
 
 function recupereDataLocalStorageEtLAffiche(){
     if ( localStorage.length === 0){
-       alert("votre panier est vide, vous allez être redirigé vers la page principal !");
+        alert("votre panier est vide, vous allez être redirigé vers la page principal !");
         window.location.href = './index.html';
     }
     else if ( localStorage.length > 0){
@@ -437,29 +439,13 @@ function totalArticlesEtPrixTotal(){
         })
 }
 
-/*
-    console.log("input article");
-    console.log(article.children);
-
-    const inputValue = article.children[1].children[1].children[0].children[1].value;
-    console.log(inputValue);
-
-*/
 
 function modificationDeQuantite(Qte,article){
-
-	//const input = document.getElementsByClassName("itemQuantity");
 
     Qte = Qte.target.value;
     articleIdProduit = article.getAttribute("data-id");
     articleCouleur = article.getAttribute("data-color");
-
-    //tmp:
-    articleValeur = article.children[1].children[1].children[0].children[1].value;
-
-    console.log("articleValeur avant condition : ");
-    console.log(articleValeur);
-    //tmp//
+    articleInputNbr = article.querySelector("input");
 
     //Verification de la quantitee entree par l'utilisateur
     if (Qte <= 100 && Qte > 0 ){
@@ -468,26 +454,14 @@ function modificationDeQuantite(Qte,article){
     }
     else if (Qte > 100 || Qte <= -100 ){
         Qte = 100 ;
-		//input.itemQuantity.value = Qte;
-
-        //tmp:
-		articleValeur = Qte;
-        console.log("articleValeur cond > 100 || <= -100 : ");
-        console,log(articleValeur);
-        //tmp//
+        articleInputNbr.value = Qte;
 
         miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte);
         totalArticlesEtPrixTotal();
     }
     else if (Qte < 0 && Qte > - 101){
         Qte = Qte*(-1);
-		//input.itemQuantity.value = Qte;
-
-        //tmp:
-		articleValeur = Qte;
-        console.log("articleValeur cond < 0 && > - 101 : ");
-        console.log(articleValeur);
-        //tmp//
+        articleInputNbr.value = Qte;
 
         miseAjourLocalStorage(articleIdProduit,articleCouleur,Qte);
         totalArticlesEtPrixTotal();
@@ -536,41 +510,40 @@ function miseAjourLocalStorage(idProduit,couleur,quantite){
 function effacerElement(elementArticle){
 	
 
-let confirmAction = confirm("etes vous bien certain de vouloir effacer cette article ?");
+    let confirmAction = confirm("etes vous bien certain de vouloir effacer cette article ?");
 	if (confirmAction) {
 
+        var buttonClicked = elementArticle.target
+        buttonClicked.parentElement.parentElement.parentElement.parentElement.remove()
+        
 
-    var buttonClicked = elementArticle.target
-    buttonClicked.parentElement.parentElement.parentElement.parentElement.remove()
-    
-
-    //Attribution de la balise <article> a une variable "article"
-    article = buttonClicked.parentElement.parentElement.parentElement.parentElement;
-    data_id = article.getAttribute("data-id");
-    couleur = article.getAttribute("data-color");
+        //Attribution de la balise <article> a une variable "article"
+        article = buttonClicked.parentElement.parentElement.parentElement.parentElement;
+        data_id = article.getAttribute("data-id");
+        couleur = article.getAttribute("data-color");
 
 
-    //pour effacer un element depuis le localStorage a partir de sa cle 
-    tab = JSON.parse(localStorage.getItem(data_id));
-    //parcour les clefs et l'efface 
-    for (let i = 0; i < localStorage.length; i++){
-        const key = localStorage.key(i);
-        if( data_id === key && tab.length === 1){//ajouter la condition que le contenu de la clef est egale a 1 
-            localStorage.removeItem(localStorage.key(i));
-        }
-        //parcour le tableau (valeur de la clef) a la recherche de la couleur ds le cas ou la clef aurait plusieurs valeurs 
-        else if(data_id === key && tab.length > 1 ){
-            for (let w = 0; w < tab.length ; w++){
-                if ( tab[w].couleur === couleur){
-                    tab.splice(w, 1);//w cible le numero de la ligne ds le tableau, 1 pr effacer {!! bizarre !!}
-                    localStorage.setItem(localStorage.key(i), JSON.stringify(tab));
+        //pour effacer un element depuis le localStorage a partir de sa cle 
+        tab = JSON.parse(localStorage.getItem(data_id));
+        //parcour les clefs et l'efface 
+        for (let i = 0; i < localStorage.length; i++){
+            const key = localStorage.key(i);
+            if( data_id === key && tab.length === 1){//ajouter la condition que le contenu de la clef est egale a 1 
+                localStorage.removeItem(localStorage.key(i));
+            }
+            //parcour le tableau (valeur de la clef) a la recherche de la couleur ds le cas ou la clef aurait plusieurs valeurs 
+            else if(data_id === key && tab.length > 1 ){
+                for (let w = 0; w < tab.length ; w++){
+                    if ( tab[w].couleur === couleur){
+                        tab.splice(w, 1);//w cible le numero de la ligne ds le tableau, 1 pr effacer {!! bizarre !!}
+                        localStorage.setItem(localStorage.key(i), JSON.stringify(tab));
+                    }
                 }
             }
         }
-    }
-    totalArticlesEtPrixTotal(); 
+        totalArticlesEtPrixTotal(); 
 
-}
+    }
 
 }
 
